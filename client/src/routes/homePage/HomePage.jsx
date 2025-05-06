@@ -1,4 +1,4 @@
-
+import SearchBar from "../../components/searchBar/SearchBar";
 import "./homePage.scss";
 
 function HomePage() {
@@ -13,7 +13,7 @@ function HomePage() {
             facilis id pariatur fugit quos laudantium temporibus dolor ea
             repellat provident impedit!
           </p>
-
+          <SearchBar />
           <div className="boxes">
             <div className="box">
               <h1>16+</h1>
