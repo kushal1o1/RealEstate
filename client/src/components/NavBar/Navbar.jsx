@@ -1,46 +1,62 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import "./navbar.scss";
+// import { Link } from "react-router-dom";
 
-const Navbar = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+function Navbar() {
+  const [open, setOpen] = useState(false);
 
-    return (
-        <nav className="navbar  -between items-center h-[100px] px-4 md:px-8">
-            <div className="flex-[3] flex items-center gap-4">
-                <a className="font-medium text-2xl flex items-center gap-2">
-                    <img src="./logo.png" className="w-7" alt="Logo" />
-                    <span>RealEstate</span>
-                </a>
-                <div className="hidden md:flex gap-6">
-                    <a href="/">Home</a>
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a href="/properties">Agents</a>
-                </div>
-            </div>
-            <div className="flex-[5] flex items-center justify-end">
-                <div className="hidden md:flex gap-4">
-                    <a href="/">Signin</a>
-                    <a className="bg-yellow-300 px-4 py-2 rounded" href="/">SignOut</a>
-                </div>
-                <button
-                    className="md:hidden"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                    <img src="./menu" alt="Menu" className="w-6" />
-                </button>
-            </div>
-            {isMenuOpen && (
-                <div className="absolute top-[100px] left-0 w-full bg-white shadow-md flex flex-col items-center gap-4 py-4 md:hidden">
-                    <a href="/">Home</a>
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a href="/properties">Agents</a>
-                    <a href="/">Signin</a>
-                    <a className="bg-yellow-300 px-4 py-2 rounded" href="/">SignOut</a>
-                </div>
-            )}
-        </nav>
-    );
-};
+  const user = true;
+  return (
+    <nav>
+      <div className="left">
+        <a href="/" className="logo">
+          <img src="/logo.png" alt="" />
+          <span>RealEstate</span>
+        </a>
+        <a href="/">Home</a>
+        <a href="/">About</a>
+        <a href="/">Contact</a>
+        <a href="/">Agents</a>
+      </div>
+      <div className="right">
+        {user ? (
+          <div className="user">
+            <img
+              src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              alt=""
+            />
+            <span>John Doe</span>
+            {/* <Link to="/profile" className="profile">
+              <div className="notification">3</div>
+              <span>Profile</span>
+            </Link> */}
+          </div>
+        ) : (
+          <>
+            <a href="/">Sign in</a>
+            <a href="/" className="register">
+              Sign up
+            </a>
+          </>
+        )}
+        <div className="menuIcon">
+          <img
+            src="/menu.png"
+            alt=""
+            onClick={() => setOpen((prev) => !prev)}
+          />
+        </div>
+        <div className={open ? "menu active" : "menu"}>
+          <a href="/">Home</a>
+          <a href="/">About</a>
+          <a href="/">Contact</a>
+          <a href="/">Agents</a>
+          <a href="/">Sign in</a>
+          <a href="/">Sign up</a>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
 export default Navbar;
