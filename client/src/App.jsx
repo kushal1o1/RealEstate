@@ -1,6 +1,11 @@
+import Navbar from './components/Navbar.jsx'
 function App() {
   return (
-    <div className="text-2xl">Hello World</div>
+    <div className="layout"> 
+
+      <Navbar/>
+    
+    </div>
   )
 }
 
