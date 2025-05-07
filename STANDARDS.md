@@ -7,7 +7,7 @@
 - Use descriptive and meaningful names.
 
 ## File and Folder Naming
-- Use **kebab-case** for file and folder names.
+- Use **camelCase** for file and folder names.
 - Component files should match the component name (e.g., `MyComponent.jsx`).
 - Group related files in the same folder.
 
@@ -16,7 +16,7 @@
 - Prefix reusable components with a common identifier (e.g., `AppButton`, `AppCard`).
 
 ## CSS/SCSS Naming
-- Use **kebab-case** for CSS/SCSS class names.
+- Use **camelCase** for CSS/SCSS class names.
 - Follow the BEM (Block Element Modifier) methodology for class naming (e.g., `button--primary`).
 
 ## State and Props
