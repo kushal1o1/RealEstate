@@ -37,9 +37,9 @@ export const login = async (req, res) => {
   try {
     // CHECK IF THE USER EXISTS
 
-    // const user = await prisma.user.findUnique({
-    //   where: { username },
-    // });
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
 
@@ -69,7 +69,7 @@ export const login = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        // secure:true,
+        // secure:true, //for development comment it
         maxAge: age,
       })
       .status(200)
