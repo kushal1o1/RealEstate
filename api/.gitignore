@@ -25,3 +25,7 @@ build/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+
+generated/
+generated/prisma/
