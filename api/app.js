@@ -7,6 +7,8 @@ import testRoute from './routes/test.route.js';
 import userRoute from './routes/user.route.js';
 
 const app = express();
+
+
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,//for cookies

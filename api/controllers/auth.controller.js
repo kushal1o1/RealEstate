@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma.js";
 
+
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -66,11 +67,11 @@ export const login = async (req, res) => {
 
     const { password: userPassword, ...userInfo } = user;
 
-    res
-      .cookie("token", token, {
+    res.cookie("token", token, {
         httpOnly: true,
-        // secure:true, //for development comment it
+        secure:false, //for development comment it
         maxAge: age,
+        sameSite: "Lax",    // <--- or "None" if doing cross-origin requests with secure:true
       })
       .status(200)
       .json(userInfo);
