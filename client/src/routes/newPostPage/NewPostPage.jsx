@@ -4,11 +4,15 @@ import Quill from 'quill'; // Import Quill
 import 'quill/dist/quill.snow.css'; // Import default theme
 import apiRequesst from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
+import { useNavigate } from "react-router-dom";
+
 function NewPostPage() {
   const [error, setError] = useState(''); 
   const[images, setImages] = useState([]);
   const [value, setValue] = useState(''); 
  const editorRef = useRef(null);     // Reference to the container div
+ 
+   const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
 
   useEffect(() => {
@@ -61,6 +65,7 @@ function NewPostPage() {
 
        }
       });
+      navigate('/'+ res.data.id);
       
     } catch (error) {
       console.error("Error adding post:", error);
@@ -118,7 +123,7 @@ function NewPostPage() {
                 <option value="rent" defaultChecked>
                   Rent
                 </option>
-                <option value="buy">Buy</option>
+                <option value="sale">Sale</option>
               </select>
             </div>
             <div className="item">
@@ -175,6 +180,15 @@ function NewPostPage() {
         </div>
       </div>
       <div className="sideContainer">
+        {images.map((image,index) => (
+          <img
+            key={index}
+            src={image}
+            alt="Uploaded"
+           
+          />
+          
+        ))}
         <UploadWidget uwConfig={{
           multiple:true,
           cloudName:  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
@@ -182,7 +196,9 @@ function NewPostPage() {
             // maxImageFileSize: 2000000,
             folder:"posts",
           
-        }}/>
+        }}
+        setState={setImages}
+        />
       </div>
     </div>
   );
