@@ -55,7 +55,10 @@ function ProfilePage() {
           </div>
           <div className="title">
             <h1>My List</h1>
+            <Link to="/post/update"> 
             <button>Create New Post</button>
+            </Link>
+
           </div>
           <List />
           <div className="title">
