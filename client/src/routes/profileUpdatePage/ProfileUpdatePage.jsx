@@ -3,10 +3,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import  apiRequest  from "../../lib/apiRequest";
+import { useNavigate } from "react-router-dom";
 
 function ProfileUpdatePage() {
   const [error, setError] = useState('');
   const {currentUser ,updateUser} = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ function ProfileUpdatePage() {
         password
       });
       updateUser(res.data);
+      navigate("/profile");
       
     } catch (error) {
       console.error("Error updating user:", error);
