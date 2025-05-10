@@ -7,6 +7,7 @@ import Login from './routes/login/Login'
 import Register from './routes/register/Register'
 import { Layout,RequireAuth } from './routes/layout/Layout'
 import ProfileUpdatePage from './routes/profileUpdatePage/ProfileUpdatePage'
+import NewPostPage from './routes/newPostPage/NewPostPage'
 
 function App() {
   const router = createBrowserRouter([
@@ -49,6 +50,10 @@ function App() {
         {
           path:'/profile/update',
           element:<ProfileUpdatePage/>
+        },
+                {
+          path:'/post/update',
+          element:<NewPostPage/>
         }
       ]
 
