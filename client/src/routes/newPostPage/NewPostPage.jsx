@@ -2,7 +2,11 @@ import "./newPostPage.scss";
 import React, { useEffect, useRef ,useState} from 'react';
 import Quill from 'quill'; // Import Quill
 import 'quill/dist/quill.snow.css'; // Import default theme
+import apiRequesst from "../../lib/apiRequest";
+import UploadWidget from "../../components/uploadWidget/UploadWidget";
 function NewPostPage() {
+  const [error, setError] = useState(''); 
+  const[images, setImages] = useState([]);
   const [value, setValue] = useState(''); 
  const editorRef = useRef(null);     // Reference to the container div
   const quillInstance = useRef(null); // Store Quill instance
@@ -27,9 +31,42 @@ function NewPostPage() {
   const handleSumbit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    data.desc = value; // Add the content of the editor to the form data
-    console.log(data);
+    const inputs = Object.fromEntries(formData.entries());
+    // console.log(inputs);
+    try {
+      const res =await apiRequesst.post("/posts", {
+       postData:{
+          title: inputs.title,
+          price: parseInt(inputs.price),
+          address: inputs.address,
+          city: inputs.city,
+          bedroom: parseInt(inputs.bedroom),
+          bathroom: parseInt(inputs.bathroom),
+          type: inputs.type,
+          property: inputs.property,
+          latitude: inputs.latitude,
+          longitude: inputs.longitude,
+          images: images,
+
+       },
+       postDetail:{
+           desc: value,
+          utilities: inputs.utilities,
+          pet: inputs.pet,
+          income: inputs.income,
+          size: parseInt(inputs.size),
+          school: parseInt(inputs.school),
+          bus: parseInt(inputs.bus),
+          restaurant: parseInt(inputs.restaurant),
+
+       }
+      });
+      
+    } catch (error) {
+      console.error("Error adding post:", error);
+      setError(error)
+      
+    }
     
   };
 
@@ -137,7 +174,16 @@ function NewPostPage() {
           </form>
         </div>
       </div>
-      <div className="sideContainer"></div>
+      <div className="sideContainer">
+        <UploadWidget uwConfig={{
+          multiple:true,
+          cloudName:  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+            uploadPreset:  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+            // maxImageFileSize: 2000000,
+            folder:"posts",
+          
+        }}/>
+      </div>
     </div>
   );
 }

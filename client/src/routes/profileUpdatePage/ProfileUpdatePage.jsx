@@ -4,13 +4,14 @@ import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import  apiRequest  from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
-import UploadWidget from "../../components/uploadWidget/uploadWidget";
+import UploadWidget from "../../components/uploadWidget/UploadWidget";
+
 
 function ProfileUpdatePage() {
   const [error, setError] = useState('');
   const [publicId, setPublicId] = useState(null);
   const {currentUser ,updateUser} = useContext(AuthContext);
-  const [avatar, setAvatar] = useState(currentUser.avatar);
+  const [avatar, setAvatar] = useState([currentUser.avatar]);
 
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ function ProfileUpdatePage() {
         username,
         email,
         password,
-        avatar,
+        avatar:avatar[0],
       });
       updateUser(res.data);
       navigate("/profile");
@@ -36,7 +37,6 @@ function ProfileUpdatePage() {
   }
   return (
     <div className="profileUpdatePage">
-      {import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
           <h1>Update Profile</h1>
@@ -67,7 +67,7 @@ function ProfileUpdatePage() {
         </form>
       </div>
       <div className="sideContainer">
-        <img src={avatar || '/noavatar.jpg'} alt="" className="avatar" />
+        <img src={avatar[0] || currentUser.avatar || '/noavatar.jpg'} alt="" className="avatar" />
         <UploadWidget uwConfig={
           {
             cloudName:  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
@@ -77,7 +77,7 @@ function ProfileUpdatePage() {
             folder:"avatars",
           }
         }
-        setAvatar={setAvatar}
+        setState={setAvatar}
         />
       </div>
     </div>
