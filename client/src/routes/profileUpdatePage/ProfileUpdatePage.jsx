@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import  apiRequest  from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
+import UploadWidget from "../../components/uploadWidget/uploadWidget";
 
 function ProfileUpdatePage() {
   const [error, setError] = useState('');
@@ -62,6 +63,15 @@ function ProfileUpdatePage() {
       </div>
       <div className="sideContainer">
         <img src={currentUser.avatar || '/noavatar.jpg'} alt="" className="avatar" />
+        <UploadWidget uwConfig={
+          {
+            cloudName: "drkqr1qdz",
+            uploadPreset: "estate",
+            multiple: false,
+            maxImageFileSize: 2000000,
+            folder:"avatars",
+          }
+        }/>
       </div>
     </div>
   );
