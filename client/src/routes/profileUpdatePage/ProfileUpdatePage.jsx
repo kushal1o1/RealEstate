@@ -22,7 +22,8 @@ function ProfileUpdatePage() {
       const res = await  apiRequest.put(`/users/${currentUser.id}`, {
         username,
         email,
-        password
+        password,
+        avatar,
       });
       updateUser(res.data);
       navigate("/profile");
