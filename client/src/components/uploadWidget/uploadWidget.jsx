@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-const CloudinaryUploadWidget = ({ uwConfig, setPublicId }) => {
+const CloudinaryUploadWidget = ({ uwConfig, setPublicId,setAvatar }) => {
   const uploadWidgetRef = useRef(null);
   const uploadButtonRef = useRef(null);
 
