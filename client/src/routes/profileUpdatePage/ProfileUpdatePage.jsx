@@ -36,6 +36,7 @@ function ProfileUpdatePage() {
   }
   return (
     <div className="profileUpdatePage">
+      {import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
           <h1>Update Profile</h1>
@@ -69,8 +70,8 @@ function ProfileUpdatePage() {
         <img src={avatar || '/noavatar.jpg'} alt="" className="avatar" />
         <UploadWidget uwConfig={
           {
-            cloudName: "drkqr1qdz",
-            uploadPreset: "estate",
+            cloudName:  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+            uploadPreset:  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
             multiple: false,
             maxImageFileSize: 2000000,
             folder:"avatars",
