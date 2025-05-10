@@ -1,12 +1,44 @@
 import "./newPostPage.scss";
-
+import React, { useEffect, useRef ,useState} from 'react';
+import Quill from 'quill'; // Import Quill
+import 'quill/dist/quill.snow.css'; // Import default theme
 function NewPostPage() {
+  const [value, setValue] = useState(''); 
+ const editorRef = useRef(null);     // Reference to the container div
+  const quillInstance = useRef(null); // Store Quill instance
+
+  useEffect(() => {
+    if (editorRef.current && !quillInstance.current) {
+      quillInstance.current = new Quill(editorRef.current, {
+        theme: 'snow', // Use 'snow' theme
+        placeholder: 'Start typing...',
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['link', 'image'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['clean'],
+          ],
+        },
+      });
+    }
+  }, []);
+  const handleSumbit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.desc = value; // Add the content of the editor to the form data
+    console.log(data);
+    
+  };
+
   return (
     <div className="newPostPage">
       <div className="formContainer">
         <h1>Add New Post</h1>
         <div className="wrapper">
-          <form>
+          <form onSubmit={handleSumbit}>
             <div className="item">
               <label htmlFor="title">Title</label>
               <input id="title" name="title" type="text" />
@@ -21,6 +53,7 @@ function NewPostPage() {
             </div>
             <div className="item description">
               <label htmlFor="desc">Description</label>
+            <div ref={editorRef} onChange={setValue} value={value} />
             </div>
             <div className="item">
               <label htmlFor="city">City</label>
