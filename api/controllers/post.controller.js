@@ -1,32 +1,31 @@
 import prisma from "../lib/prisma.js";
 
+console.log("post controller");
 export const getPosts = async (req, res) => {
-    const query = req.query;
-    console.log(query);
-    try {
-        const posts = await prisma.post.findMany({
-            where:{
-                city :query.city || undefined,
-                property:query.property || undefined,
-                type:query.type || undefined,
-                bedroom : parseInt(query.bedroom) || undefined,
-                price:{
-                    lte:parseInt(query.maxPrice) || 1000000000,
-                    gte:parseInt(query.minPrice) || 0,
-                },
-                type:query.type || undefined,
+  const query = req.query;
 
 
-            }
-        });
-        res.status(200).json(posts);
-        
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "GetPosts:Failed to get Posts" });
-        
-    }
-}
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+       
+        type: query.type || undefined,
+        property: query.property || undefined,
+        bedroom: parseInt(query.bedroom) || undefined,
+        price: {
+          gte: parseInt(query.minPrice) || undefined,
+          lte: parseInt(query.maxPrice) || undefined,
+        },
+      },
+    });
+    setTimeout(() => {
+    res.status(200).json(posts);
+    }, 3000);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to get posts" });
+  }
+};
 export const getPost = async (req, res) => {
     try {
         const post = await prisma.post.findUnique(
@@ -47,7 +46,7 @@ export const getPost = async (req, res) => {
             }
             }   
         );
-
+        console.log(post);
         res.status(200).json(post);
         
     } catch (error) {

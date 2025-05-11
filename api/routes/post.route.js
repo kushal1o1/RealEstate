@@ -5,6 +5,7 @@ import { verifyToken } from '../middleware/verifyToken.js';
 const router = express.Router();
 
 router.get('/',getPosts);
+console.log('getPosts');
 router.get('/:id',getPost);
 router.post('/', verifyToken, addPost);
 router.put('/:id', verifyToken,updatePost);
