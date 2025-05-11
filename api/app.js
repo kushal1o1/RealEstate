@@ -22,7 +22,6 @@ app.use('/api/users', userRoute);
 app.use('/api/posts', postRoute);
 app.use('/api/test', testRoute);
 
-
 app.listen(8800, () => {
   console.log('Server is running on port 8800');
 });
