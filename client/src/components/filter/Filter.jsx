@@ -47,7 +47,7 @@ const handleFilter = (e) => {
           <label htmlFor="type">Type</label>
           <select name="type" id="type" onChange={handleChange} defaultValue={query.type}>
             <option value="">any</option>
-            <option value="buy">Buy</option>
+            <option value="sale">Buy</option>
             <option value="rent">Rent</option>
           </select>
         </div>
