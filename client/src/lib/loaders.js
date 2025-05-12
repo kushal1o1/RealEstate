@@ -20,5 +20,9 @@ const query =request.url.split('?')[1];//provide 2 part as array before after '?
 export const profilePageLoader = async () => {
 
   const res =  apiRequest.get('/users/profilePosts');
-  return {postResponse :res,};
+  const chatPromise =  apiRequest.get('/chats');
+
+  return {postResponse :res,
+          chatResponse :chatPromise,
+  };
 }
