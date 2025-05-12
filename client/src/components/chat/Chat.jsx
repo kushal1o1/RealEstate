@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState,useEffect,useRef } from "react";
 import "./chat.scss";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { SocketContext } from "../../context/SocketContext";
 import apiRequest from "../../lib/apiRequest";
 import {format} from "timeago.js";
 
 function Chat({chats}) {
   const [chat, setChat] = useState(null);
   const {currentUser} = useContext(AuthContext);
+  const {socket} = useContext(SocketContext);
+
+  const messageEndRef = useRef();
+    useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat]);
+
   console.log(chats)
   const handleOpenChat = async (id,receiver) => {
     try {
@@ -18,39 +26,68 @@ function Chat({chats}) {
       console.error(err);
     }
   };
+
   const handleSubmit = async (e) => {
-  
     e.preventDefault();
+
     const formData = new FormData(e.target);
-    const text = formData.get('text');
+    const text = formData.get("text");
+
     if (!text) return;
     try {
-      const res = await apiRequest.post('messages/'+chat.id, {text});
-      setChat((prev) => ({
-        ...prev,
-       messages: [...prev.messages, res.data],
-      }));
+      const res = await apiRequest.post("/messages/" + chat.id, { text });
+      setChat((prev) => ({ ...prev, messages: [...prev.messages, res.data] }));
       e.target.reset();
-    } catch (error) {
-      console.error(error);
-      
+      socket.emit("sendMessage", {
+        receiverId: chat.receiver.id,
+        data: res.data,
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
+
+  useEffect(() => {
+    const read = async () => {
+      try {
+        await apiRequest.put("/chats/read/" + chat.id);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (chat && socket) {
+      socket.on("getMessage", (data) => {
+        if (chat.id === data.chatId) {
+          setChat((prev) => ({ ...prev, messages: [...prev.messages, data] }));
+          read();
+        }
+      });
+    }
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, chat]);
   return (
     <div className="chat">
       <div className="messages">
         <h1>Messages</h1>
-        {chats?.map((chat) => (
-          <div className="message" key={chat.id} 
-          style={{backgroundColor: chat.seenBy.includes(currentUser.id) ? 'white' : '#f0f0f0'}}
-          onClick={()=>handleOpenChat(chat.id,chat.receiver)}
+        {chats?.map((c) => (
+          <div className="message" key={c.id} 
+          style={{
+              backgroundColor:
+                c.seenBy.includes(currentUser.id) || chat?.id === c.id
+                  ? "white"
+                  : "#fecd514e",
+            }}
+          onClick={()=>handleOpenChat(c.id,c.receiver)}
           >
           <img
-            src={chat.receiver.avatar || './noavatar.jpg'}
+            src={c.receiver.avatar || './noavatar.jpg'}
             alt=""
           />
-          <span>{chat.receiver.username}</span>
-          <p>{chat.lastMessage}</p>
+          <span>{c.receiver.username}</span>
+          <p>{c.lastMessage}</p>
         </div>
         ))}
         
@@ -71,14 +108,19 @@ function Chat({chats}) {
             {chat.messages.map((message) => (
               <div className="chatMessage" 
               style={{
-                alignSelf: message.userId === currentUser.id ? 'flex-end' : 'flex-start',
-                 textAlign: message.userId === currentUser.id ? 'right' : 'left',
-              }}
+                  alignSelf:
+                    message.userId === currentUser.id
+                      ? "flex-end"
+                      : "flex-start",
+                  textAlign:
+                    message.userId === currentUser.id ? "right" : "left",
+                }}
               key={message.id}>
                 <p>{message.text}</p>
                 <span>{format(message.createdAt)}</span>
               </div>
             ))}
+               <div ref={messageEndRef}></div>
             {/* Example message */}
             {/* <div className="chatMessage own">
               <p>Lorem ipsum dolor sit amet</p>
