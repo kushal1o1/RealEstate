@@ -166,7 +166,7 @@ export const getNotificationNumber = async (req, res) => {
     try {
         const number = await prisma.chat.count({
             where: {
-                userIds:{
+                userIDs:{
                     has: tokenUserId,
                 },
                 NOT:{
