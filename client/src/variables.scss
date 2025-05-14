@@ -1,0 +1,45 @@
+// Main color scheme
+$primary-color: #4a6fa5;
+$secondary-color: #ffb347;
+$background-color: #fcf5f3; //
+$card-background: #ffffff;
+
+// Text colors
+$text-primary: #2d3748;
+$text-secondary: #718096;
+
+// UI elements
+$border-radius: 12px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+$transition: all 0.3s ease;
+$input-border:1px solid gray; //
+
+
+
+//Button styles
+$button-background:teal;//
+$button-color:white; //
+$button-disabled-background:#BED9D8; //
+
+
+$main-button-background: #fece51;//
+
+// Responsive breakpoints
+// These are already defined in your responsive.scss mixins
+// @mixin sm { @media (max-width: 738px) { @content; } }
+// @mixin md { @media (max-width: 1024px) { @content; } }
+// @mixin lg { @media (max-width: 1366px) { @content; } }
+
+// Additional colors that could be useful
+$success-color: #48bb78;
+$danger-color: #e53e3e;
+$warning-color: #ed8936;
+$info-color: #4299e1;
+
+// Additional UI elements
+$hover-transition: transform 0.2s ease, box-shadow 0.3s ease;
+$container-padding: 20px;
+$section-spacing: 40px;
+$card-padding: 25px;
+
+// You can add more variables as needed for your project
