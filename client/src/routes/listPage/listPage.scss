@@ -1,5 +1,6 @@
 // @import "../../responsive.scss";
 @use "../../responsive" as *;
+@import "../../variables";
 
 
 .listPage {
@@ -23,7 +24,7 @@
   .mapContainer {
     flex: 2;
     height: 100%;
-    background-color: #fcf5f3;
+    background-color:$background-color;
 
     @include md{
       display: none;

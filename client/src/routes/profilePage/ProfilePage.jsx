@@ -5,6 +5,7 @@ import "./profilePage.scss";
 import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Suspense, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import UserInfo from "./UserInfo.jsx";
 
 function ProfilePage() {
   const data = useLoaderData();
@@ -37,7 +38,7 @@ function ProfilePage() {
             <button>Update Profile</button>
             </Link>
           </div>
-          <div className="info">
+          {/* <div className="info">
             <span>
               Avatar:
               <img
@@ -52,7 +53,8 @@ function ProfilePage() {
               E-mail: <b>{currentUser.email}</b>
             </span>
             <button onClick={handleLogout}>Logout</button>
-          </div>
+          </div> */}
+          <UserInfo  currentUser={currentUser} handleLogout={handleLogout}/>
           <div className="title">
             <h1>My List</h1>
             <Link to="/post/update"> 

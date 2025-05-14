@@ -1,5 +1,6 @@
 // @import "../../responsive.scss";
 @use "../../responsive" as *;
+@import "../../variables";
 
 
 .homePage {
@@ -63,7 +64,7 @@
 
   .imgContainer {
     flex: 2;
-    background-color: #fcf5f3;
+    background-color:$background-color;
     position: relative;
     display: flex;
     align-items: center;

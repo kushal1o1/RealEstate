@@ -1,3 +1,5 @@
+@use '../../variables.scss' as *;
+
 .profileUpdatePage {
     height: 100%;
     display: flex;
@@ -23,15 +25,15 @@
           input {
             padding: 20px;
             border-radius: 5px;
-            border: 1px solid gray;
+            border: $input-border;
           }
         }
         button {
           padding: 20px;
           border-radius: 5px;
           border: none;
-          background-color: teal;
-          color: white;
+          background-color:$button-background;
+          color:$button-color;
           font-weight: bold;
           cursor: pointer;
         }
@@ -40,7 +42,7 @@
   
     .sideContainer {
       flex: 2;
-      background-color: #fcf5f3;
+      background-color: $background-color;
       display: flex;
       flex-direction: column;
       gap: 20px;
