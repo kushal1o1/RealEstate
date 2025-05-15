@@ -9,6 +9,9 @@ import { Layout,RequireAuth } from './routes/layout/Layout'
 import ProfileUpdatePage from './routes/profileUpdatePage/ProfileUpdatePage'
 import NewPostPage from './routes/newPostPage/NewPostPage'
 import { singlePageLoader,listPageLoader,profilePageLoader } from './lib/loaders.js'
+import Contact from './routes/contactPage/Contact'
+import Agent from './routes/agentPage/Agent'
+import About from './routes/aboutPage/About'
 function App() {
   const router = createBrowserRouter([
     {
@@ -38,7 +41,18 @@ function App() {
           path:"/register",
           element:<Register/>
         },
-     
+        {
+          path:"/contact",
+          element:<Contact/>
+        },
+        {
+          path:"/agent",
+          element:<Agent/>
+        },
+        {
+          path:"/about",
+          element:<About/>
+        }
       ]
     },
     {
