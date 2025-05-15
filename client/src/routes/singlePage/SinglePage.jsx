@@ -2,7 +2,7 @@ import "./singlePage.scss";
 import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
 import { singlePostData, userData } from "../../lib/dummydata";
-import { redirect, useLoaderData } from "react-router-dom";
+import { redirect, useLoaderData ,useNavigate} from "react-router-dom";
 import DOMPurify from "dompurify";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -12,6 +12,7 @@ function SinglePage() {
   const post = useLoaderData();
   const [saved, setSaved] = useState(post.isSaved);
   const {currentUser} = useContext(AuthContext); 
+  const navigator = useNavigate();
   // console.log(post);
   const handleSave = async () => {
     // TODO:optimistics hook use ok later
@@ -26,6 +27,18 @@ function SinglePage() {
       console.log(err);
     setSaved(!saved);
 
+    }
+  }
+  const handleMessageClick = async () => {
+    if(!currentUser){
+      redirect('/login');
+    }
+    try{
+      await apiRequest.post('/chats',{receiverId:post.userId});
+      navigator('/profile');
+
+    }catch(err){
+      console.log(err);
     }
   }
   
@@ -138,7 +151,7 @@ function SinglePage() {
             <Map data={[post]} />
           </div>
           <div className="buttons">
-            <button>
+            <button onClick={handleMessageClick}>
               <img src="/chat.png" alt="" />
               Send a Message
             </button>
