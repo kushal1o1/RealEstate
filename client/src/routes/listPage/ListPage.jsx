@@ -8,7 +8,6 @@ import { Suspense } from "react";
 
 function ListPage() {
   const data = useLoaderData();
-
   return <div className="listPage">
     <div className="listContainer">
       <div className="wrapper">
@@ -17,6 +16,7 @@ function ListPage() {
         <Await resolve={data.postResponse}
         errorElement={<div>Error loading posts</div>}
         >
+         
           {(postResponse) => (postResponse.data.map(item=>(
           <Card key={item.id} item={item}/>
         ))

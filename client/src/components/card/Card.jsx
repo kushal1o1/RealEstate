@@ -1,7 +1,27 @@
 import { Link } from "react-router-dom";
 import "./card.scss";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
+import { useNavigate } from "react-router-dom";
+
 
 function Card({ item }) {
+  const {currentUser} = useContext(AuthContext); 
+  const navigator = useNavigate();
+
+    const handleMessageClick = async () => {
+    if(!currentUser){
+      redirect('/login');
+    }
+    try{
+      await apiRequest.post('/chats',{receiverId:item.userId});
+      navigator('/profile');
+
+    }catch(err){
+      console.log(err);
+    }
+  }
   return (
     <div className="card">
       <Link to={`/${item.id}`} className="imageContainer">
@@ -28,10 +48,8 @@ function Card({ item }) {
             </div>
           </div>
           <div className="icons">
-            <div className="icon">
-              <img src="/save.png" alt="" />
-            </div>
-            <div className="icon">
+
+            <div className="icon" onClick={handleMessageClick}>
               <img src="/chat.png" alt="" />
             </div>
           </div>
