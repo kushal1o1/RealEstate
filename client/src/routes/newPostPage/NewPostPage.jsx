@@ -15,23 +15,31 @@ function NewPostPage() {
    const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
 
-  useEffect(() => {
-    if (editorRef.current && !quillInstance.current) {
-      quillInstance.current = new Quill(editorRef.current, {
-        theme: 'snow', // Use 'snow' theme
-        placeholder: 'Start typing...',
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            ['link', 'image'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['clean'],
-          ],
-        },
-      });
-    }
-  }, []);
+useEffect(() => {
+  if (editorRef.current && !quillInstance.current) {
+    quillInstance.current = new Quill(editorRef.current, {
+      theme: 'snow',
+      placeholder: 'Start typing...',
+      modules: {
+        toolbar: [
+          [{ font: [] }],
+          [{ size: ['small', false, 'large', 'huge'] }],
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ script: 'sub' }, { script: 'super' }],
+          [{ color: [] }, { background: [] }],
+          [{ align: [] }],
+          ['blockquote'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ indent: '-1' }, { indent: '+1' }],
+          ['link'],
+          ['clean'],
+        ],
+      },
+    });
+  }
+}, []);
+
   const handleSumbit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -83,15 +91,15 @@ function NewPostPage() {
           <form onSubmit={handleSumbit}>
             <div className="item">
               <label htmlFor="title">Title</label>
-              <input id="title" name="title" type="text" />
+              <input id="title" name="title" type="text" required />
             </div>
             <div className="item">
               <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number" />
+              <input id="price" name="price" type="number"  required/>
             </div>
             <div className="item">
               <label htmlFor="address">Address</label>
-              <input id="address" name="address" type="text" />
+              <input id="address" name="address" type="text" required/>
             </div>
             <div className="item description">
               <label htmlFor="desc">Description</label>
@@ -99,23 +107,23 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="city">City</label>
-              <input id="city" name="city" type="text" />
+              <input id="city" name="city" type="text" required/>
             </div>
             <div className="item">
               <label htmlFor="bedroom">Bedroom Number</label>
-              <input min={1} id="bedroom" name="bedroom" type="number" />
+              <input min={1} id="bedroom" name="bedroom" type="number" required />
             </div>
             <div className="item">
               <label htmlFor="bathroom">Bathroom Number</label>
-              <input min={1} id="bathroom" name="bathroom" type="number" />
+              <input min={1} id="bathroom" name="bathroom" type="number" required/>
             </div>
             <div className="item">
               <label htmlFor="latitude">Latitude</label>
-              <input id="latitude" name="latitude" type="text" />
+              <input id="latitude" name="latitude" type="text" required/>
             </div>
             <div className="item">
               <label htmlFor="longitude">Longitude</label>
-              <input id="longitude" name="longitude" type="text" />
+              <input id="longitude" name="longitude" type="text" required/>
             </div>
             <div className="item">
               <label htmlFor="type">Type</label>
@@ -129,7 +137,7 @@ function NewPostPage() {
             <div className="item">
               <label htmlFor="type">Property</label>
               <select name="property">
-                <option value="apartment">Apartment</option>
+                <option value="apartment" defaultChecked >Apartment</option>
                 <option value="house">House</option>
                 {/* <option value="condo">Condo</option> */}
                 <option value="land">Land</option>
@@ -138,7 +146,7 @@ function NewPostPage() {
             <div className="item">
               <label htmlFor="utilities">Utilities Policy</label>
               <select name="utilities">
-                <option value="owner">Owner is responsible</option>
+                <option value="owner" defaultChecked >Owner is responsible</option>
                 <option value="tenant">Tenant is responsible</option>
                 <option value="shared">Shared</option>
               </select>
@@ -147,7 +155,7 @@ function NewPostPage() {
               <label htmlFor="pet">Pet Policy</label>
               <select name="pet">
                 <option value="allowed">Allowed</option>
-                <option value="not-allowed">Not Allowed</option>
+                <option value="not-allowed" defaultChecked>Not Allowed</option>
               </select>
             </div>
             <div className="item">
@@ -157,23 +165,24 @@ function NewPostPage() {
                 name="income"
                 type="text"
                 placeholder="Income Policy"
+                required
               />
             </div>
             <div className="item">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number" />
+              <input min={0} id="size" name="size" type="number" required/>
             </div>
             <div className="item">
               <label htmlFor="school">School</label>
-              <input min={0} id="school" name="school" type="number" />
+              <input min={0} id="school" name="school" type="number" required/>
             </div>
             <div className="item">
               <label htmlFor="bus">bus</label>
-              <input min={0} id="bus" name="bus" type="number" />
+              <input min={0} id="bus" name="bus" type="number"  required/>
             </div>
             <div className="item">
               <label htmlFor="restaurant">Restaurant</label>
-              <input min={0} id="restaurant" name="restaurant" type="number" />
+              <input min={0} id="restaurant" name="restaurant" type="number" required />
             </div>
             <button className="sendButton">Add</button>
           </form>
@@ -185,7 +194,7 @@ function NewPostPage() {
             key={index}
             src={image}
             alt="Uploaded"
-           
+
           />
           
         ))}

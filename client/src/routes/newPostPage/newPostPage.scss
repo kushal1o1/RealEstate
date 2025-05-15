@@ -1,78 +1,163 @@
 @use '../../variables.scss' as *;
-
 .newPostPage {
-    height: 100%;
-    display: flex;
-  
-    .formContainer {
-      flex: 3;
-      overflow: scroll;
-  
-      .wrapper {
-        margin: 30px 50px 100px 0px;
-  
-        form {
+  height: 90vh; // Fixed height
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .formContainer {
+    flex: 3;
+    overflow-y: auto;
+
+    .wrapper {
+      margin: 30px 50px 100px 0px;
+      padding-right: 20px;
+
+      @media (max-width: 768px) {
+        margin: 20px;
+      }
+
+      form {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+
+        .item {
+          width: 30%;
           display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 20px;
-  
-          .item {
-            width: 30%;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-  
-            label {
-            }
-  
-            input {
-              padding: 20px;
-              border-radius: 5px;
-              border: $input-border;
-            }
-  
-            select {
-              padding: 19px;
-            }
-  
-            &.description {
-              width: 100%;
-              height: 320px;
-  
-              .quill > .ql-container > .ql-editor{
-                height: 200px;
-                font-size: 16px;
-              }
+          flex-direction: column;
+          gap: 5px;
+
+          @media (max-width: 1024px) {
+            width: 45%;
+          }
+
+          @media (max-width: 768px) {
+            width: 100%;
+          }
+
+          input {
+            padding: 20px;
+            border-radius: 5px;
+            border: $input-border;
+          }
+
+          select {
+            padding: 19px;
+          }
+
+          &.description {
+            width: 100%;
+            height: 320px;
+
+            .quill > .ql-container > .ql-editor {
+              height: 200px;
+              font-size: 16px;
             }
           }
-          .sendButton {
-            width: 30%;
-            border-radius: 5px;
-            border: none;
-            background-color:$button-background;
-            color:$button-color;
-            font-weight: bold;
-            cursor: pointer;
+        }
+        .ql-container {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid $input-border;
+  background-color: #fff;
+  height: 200px;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    height: 150px;
+  }
+}
+
+.ql-toolbar {
+  border-radius: 8px 8px 0 0;
+  border: 1px solid $input-border;
+  border-bottom: none;
+  background-color: #f9f9f9;
+  padding: 10px;
+
+  button {
+    color: #333;
+
+    &:hover {
+      background-color: #ececec;
+    }
+  }
+
+  .ql-picker {
+    color: #333;
+  }
+
+  .ql-picker-label:hover,
+  .ql-picker-options {
+    color: #333;
+  }
+}
+
+.ql-editor {
+  padding: 15px;
+  min-height: 160px;
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: $button-background;
+    text-decoration: underline;
+  }
+
+  ul,
+  ol {
+    padding-left: 20px;
+  }
+}
+
+
+        .sendButton {
+           padding: 20px 20px;
+          background-color:$main-button-background;
+          cursor: pointer;
+          border: none;
+
+          @media (max-width: 768px) {
+            width: 100%;
           }
         }
       }
     }
-  
-    .sideContainer {
-      flex: 2;
-      background-color: $background-color;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      justify-content: center;
-  
-      img {
-        width: 50%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 5px;
+  }
+
+  .sideContainer {
+    flex: 2;
+    background-color: $background-color;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    @media (max-width: 768px) {
+      flex: none;
+      order: -1;
+      height: auto;
+    }
+
+    img {
+      width: 50%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 5px;
+
+      @media (max-width: 768px) {
+        width: 80%;
       }
     }
   }
+}

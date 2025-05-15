@@ -9,9 +9,8 @@ import UploadWidget from "../../components/uploadWidget/UploadWidget";
 
 function ProfileUpdatePage() {
   const [error, setError] = useState('');
-  const [publicId, setPublicId] = useState(null);
   const {currentUser ,updateUser} = useContext(AuthContext);
-  const [avatar, setAvatar] = useState([currentUser.avatar]);
+  const [avatar, setAvatar] = useState([]);
 
   const navigate = useNavigate();
 

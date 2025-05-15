@@ -1,8 +1,17 @@
 @use '../../variables.scss' as *;
+@use '../../responsive' as *;
 
 .profileUpdatePage {
     height: 100%;
     display: flex;
+    flex-direction: row;
+    @include md {
+      flex-direction: column;
+      overflow: scroll;
+      order:-1;
+    }
+    
+
   
     .formContainer {
       flex:3;
@@ -48,10 +57,18 @@
       gap: 20px;
       align-items: center;
       justify-content: center;
+
+      @include sm{
+        flex: none;
+        order: -1;
+        height: auto;
+      }
   
       .avatar{
-        width: 50%;
+        width: 150px;
+        height: 150px;
         object-fit: cover;
+        border-radius: 50%;
       }
     }
   }
