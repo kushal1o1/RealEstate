@@ -30,6 +30,10 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", ({ receiverId, data }) => {
     const receiver = getUser(receiverId);
+    if (!receiver) {
+      console.log("User not found");
+      return;
+    }
     io.to(receiver.socketId).emit("getMessage", data);
   });
 
