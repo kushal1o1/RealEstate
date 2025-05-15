@@ -26,7 +26,7 @@ const handleFilter = (e) => {
   return (
     <div className="filter">
       <h1>
-        Search results for <b>{searchParams.get('city')}</b>
+        Search results {searchParams.get('city') === "undefined" || !searchParams.get('city') ? '' : <>for <b>{searchParams.get('city')}</b></>}
       </h1>
       <div className="top">
         <div className="item">
@@ -37,7 +37,7 @@ const handleFilter = (e) => {
             name="city"
             placeholder="City Location"
             onChange={handleChange}
-            defaultValue={query.city}
+            defaultValue={query.city === "undefined"? '': query.city}
 
           />
         </div>
@@ -57,7 +57,7 @@ const handleFilter = (e) => {
             <option value="">any</option>
             <option value="apartment">Apartment</option>
             <option value="house">House</option>
-            <option value="condo">Condo</option>
+            {/* <option value="condo">Condo</option> */}
             <option value="land">Land</option>
           </select>
         </div>
