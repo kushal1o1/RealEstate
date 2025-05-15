@@ -17,4 +17,4 @@ COPY . .
 # Install nodemon globally (optional)
 RUN npm install -g nodemon
 
-CMD ["nodemon", "--env-file", ".env", "app.js"]
+CMD ["nodemon", "--watch", ".", "--ext", "js,json", "--legacy-watch", "app.js"]
