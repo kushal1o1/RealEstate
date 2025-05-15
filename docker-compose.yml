@@ -1,0 +1,35 @@
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    ports:
+      - "8800:8800"
+    env_file:
+      - ./api/.env
+    # restart: always
+
+  client:
+    build: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./client/.env
+    # stdin_open: true #for interactive mode in vite
+    # tty: true #color ,cursor terminal features
+    # restart: always
+
+  socket:
+    build: ./socket
+    volumes:
+      - ./socket:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./socket/.env
+    # restart: always
