@@ -33,6 +33,10 @@ function SinglePage() {
     if(!currentUser){
       redirect('/login');
     }
+    if(currentUser.id == post.userId){
+      navigator('/profile');
+      return;
+    }
     try{
       await apiRequest.post('/chats',{receiverId:post.userId});
       navigator('/profile');
@@ -58,7 +62,7 @@ function SinglePage() {
                 <div className="price">$ {post.price}</div>
               </div>
               <div className="user">
-                <img src={post.user.avatar} alt="" />
+                <img src={post.user.avatar || './noavatar.jpg'} alt="" />
                 <span>{post.user.username}</span>
               </div>
             </div>

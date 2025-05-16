@@ -14,6 +14,10 @@ function Card({ item }) {
     if(!currentUser){
       redirect('/login');
     }
+    if(currentUser.id == item.userId){
+      navigator('/profile');
+      return;
+    }
     try{
       await apiRequest.post('/chats',{receiverId:item.userId});
       navigator('/profile');
