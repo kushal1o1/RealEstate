@@ -22,9 +22,9 @@ function Navbar() {
           <span>RealEstate</span>
         </a>
         <a href="/">Home</a>
-        <a href="/">About</a>
-        <a href="/">Contact</a>
-        <a href="/">Agents</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/agent">Agents</a>
       </div>
       <div className="right">
         {currentUser ? (
