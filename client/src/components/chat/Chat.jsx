@@ -77,7 +77,7 @@ function Chat({chats}) {
     <div className="chat">
       <div className="messages">
         <h1>Messages</h1>
-        {chats?.map((c) => (
+        {Array.isArray(chats) && chats?.map((c) => (
           <div className="message" key={c.id} 
           style={{
               backgroundColor:

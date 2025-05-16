@@ -10,6 +10,10 @@ export const getChats = async (req, res) => {
                 }
             }
         })
+        console.log(chats);
+        if (!chats || chats.length === 0) {
+            return res.status(200).json({ message: "No chats till now" });
+        }
         for (const chat of chats) {
             const receiverId = chat.userIDs.find(id => id !== tokenUserId);
             const receiver = await prisma.user.findUnique({
@@ -29,7 +33,7 @@ export const getChats = async (req, res) => {
         
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Failed to get chats" });
+        res.status(500).json({ message: "Failed to get chats " });
         
     }
 }
