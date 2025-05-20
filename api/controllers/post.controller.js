@@ -105,10 +105,34 @@ export const addPost = async (req, res) => {
 }
 
 export const updatePost = async (req, res) => {
+    const body = req.body;
+    const  tokenUserId = req.userId;
     try {
+        const post = await prisma.post.findUnique({
+            where: {
+                id: req.params.id
+            }
+        });
+        if (post.userId !== tokenUserId) {
+            return res.status(403).json(
+                {
+                    message:"Not authorized to update this post"
+                }
+            );
+        }
+        const updatedPost = await prisma.post.update({
+            where: {
+                id: req.params.id
+            },
+            data: {
+                ...body.postData,
+                postDetail:{
+                    update:body.postDetail
+                }
+            }
+        });
+        res.status(200).json(updatedPost);
 
-        res.status(200).json();
-        
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "UpdatePost:Failed to get Posts" });
