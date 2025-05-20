@@ -52,9 +52,13 @@ function Card({ item }) {
             </div>
           </div>
           <div className="icons">
-
+            <div className='update'>
+              <Link to={`/post/update/${item.id}`}>
+                <img src="/save.png" alt="update" />
+              </Link>
+            </div>
             <div className="icon" onClick={handleMessageClick}>
-              <img src="/chat.png" alt="" />
+              <img src="/chat.png" alt="update" />
             </div>
           </div>
         </div>
