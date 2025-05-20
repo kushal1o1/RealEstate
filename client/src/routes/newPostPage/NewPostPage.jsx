@@ -2,7 +2,7 @@ import "./newPostPage.scss";
 import React, { useEffect, useRef ,useState} from 'react';
 import Quill from 'quill'; // Import Quill
 import 'quill/dist/quill.snow.css'; // Import default theme
-import apiRequesst from "../../lib/apiRequest";
+import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate } from "react-router-dom";
 
@@ -46,7 +46,7 @@ useEffect(() => {
     const inputs = Object.fromEntries(formData.entries());
     // console.log(inputs);
     try {
-      const res =await apiRequesst.post("/posts", {
+      const res =await apiRequest.post("/posts", {
        postData:{
           title: inputs.title,
           price: parseInt(inputs.price),
