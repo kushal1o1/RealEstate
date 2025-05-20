@@ -12,6 +12,7 @@ import { singlePageLoader,listPageLoader,profilePageLoader } from './lib/loaders
 import Contact from './routes/contactPage/Contact'
 import Agent from './routes/agentPage/Agent'
 import About from './routes/aboutPage/About'
+import UpdatePostPage from './routes/updatePostPage/UpdatePostPage'
 function App() {
   const router = createBrowserRouter([
     {
@@ -71,6 +72,10 @@ function App() {
                 {
           path:'/post/update',
           element:<NewPostPage/>
+        },
+        {
+          path:'/post/update/:id',
+          element:<UpdatePostPage/>,
         }
       ]
 
