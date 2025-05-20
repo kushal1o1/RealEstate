@@ -11,6 +11,7 @@ function NewPostPage() {
   const[images, setImages] = useState([]);
   const [value, setValue] = useState(''); 
  const editorRef = useRef(null);     // Reference to the container div
+  const [activeTab, setActiveTab] = useState('basic');
  
    const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
@@ -37,6 +38,9 @@ useEffect(() => {
         ],
       },
     });
+      quillInstance.current.on('text-change', () => {
+        setValue(quillInstance.current.root.innerHTML);
+      });
   }
 }, []);
 
@@ -83,131 +87,253 @@ useEffect(() => {
     
   };
 
+    const handleRemoveImage = (imageToRemove) => {
+    setImages((prev) => prev.filter((img) => img !== imageToRemove));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
   return (
-    <div className="newPostPage">
-      <div className="formContainer">
-        <h1>Add New Post</h1>
-        <div className="wrapper">
-          <form onSubmit={handleSumbit}>
-            <div className="item">
+    <div className="updatePostPage">
+      <div className="container">
+        <h1>Update Post</h1>
+        
+        {error && <div className="error-message">{error.message}</div>}
+        
+        <div className="tabs">
+          <button 
+            className={activeTab === 'basic' ? 'active' : ''} 
+            onClick={() => setActiveTab('basic')}
+          >
+            Basic Info
+          </button>
+          <button 
+            className={activeTab === 'details' ? 'active' : ''} 
+            onClick={() => setActiveTab('details')}
+          >
+            Property Details
+          </button>
+          <button 
+            className={activeTab === 'location' ? 'active' : ''} 
+            onClick={() => setActiveTab('location')}
+          >
+            Location & Policies
+          </button>
+          <button 
+            className={activeTab === 'images' ? 'active' : ''} 
+            onClick={() => setActiveTab('images')}
+          >
+            Images
+          </button>
+        </div>
+        
+        <form onSubmit={handleSumbit}>
+          <div className={`tab-content ${activeTab === 'basic' ? 'active' : ''}`}>
+            <div className="form-group">
               <label htmlFor="title">Title</label>
-              <input id="title" name="title" type="text" required />
+              <input id="title" name="title" type="text"required />
             </div>
-            <div className="item">
+            
+            <div className="form-group">
               <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number"  required/>
+              <input id="price" name="price" type="number"  required />
             </div>
-            <div className="item">
-              <label htmlFor="address">Address</label>
-              <input id="address" name="address" type="text" required/>
-            </div>
-            <div className="item description">
-              <label htmlFor="desc">Description</label>
-            <div ref={editorRef} onChange={setValue} value={value} />
-            </div>
-            <div className="item">
-              <label htmlFor="city">City</label>
-              <input id="city" name="city" type="text" required/>
-            </div>
-            <div className="item">
-              <label htmlFor="bedroom">Bedroom Number</label>
-              <input min={1} id="bedroom" name="bedroom" type="number" required />
-            </div>
-            <div className="item">
-              <label htmlFor="bathroom">Bathroom Number</label>
-              <input min={1} id="bathroom" name="bathroom" type="number" required/>
-            </div>
-            <div className="item">
-              <label htmlFor="latitude">Latitude</label>
-              <input id="latitude" name="latitude" type="text" required/>
-            </div>
-            <div className="item">
-              <label htmlFor="longitude">Longitude</label>
-              <input id="longitude" name="longitude" type="text" required/>
-            </div>
-            <div className="item">
+            
+            <div className="form-group">
               <label htmlFor="type">Type</label>
-              <select name="type">
-                <option value="rent" defaultChecked>
-                  Rent
-                </option>
+              <select 
+                name="type" 
+              
+              
+              >
+                <option value="rent">Rent</option>
                 <option value="sale">Sale</option>
               </select>
             </div>
-            <div className="item">
-              <label htmlFor="type">Property</label>
-              <select name="property">
-                <option value="apartment" defaultChecked >Apartment</option>
+            
+            <div className="form-group">
+              <label htmlFor="property">Property Type</label>
+              <select 
+                name="property" 
+            
+                
+              >
+                <option value="apartment">Apartment</option>
                 <option value="house">House</option>
-                {/* <option value="condo">Condo</option> */}
                 <option value="land">Land</option>
               </select>
             </div>
-            <div className="item">
+            
+            <div className="form-group">
+              <label htmlFor="bedroom">Bedrooms</label>
+              <input min={1} id="bedroom" name="bedroom" type="number" required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="bathroom">Bathrooms</label>
+              <input min={1} id="bathroom" name="bathroom" type="number"  required />
+            </div>
+            
+            <div className="form-group full-width">
+              <label htmlFor="desc">Description</label>
+              <div className="editor-container">
+                <div ref={editorRef} />
+              </div>
+            </div>
+          </div>
+          
+          <div className={`tab-content ${activeTab === 'details' ? 'active' : ''}`}>
+            <div className="form-group">
+              <label htmlFor="size">Total Size (sqft)</label>
+              <input min={0} id="size" name="size" type="number"  required />
+            </div>
+            
+            <div className="form-group">
               <label htmlFor="utilities">Utilities Policy</label>
-              <select name="utilities">
-                <option value="owner" defaultChecked >Owner is responsible</option>
+              <select 
+                name="utilities" 
+              
+              >
+                <option value="owner">Owner is responsible</option>
                 <option value="tenant">Tenant is responsible</option>
                 <option value="shared">Shared</option>
               </select>
             </div>
-            <div className="item">
+            
+            <div className="form-group">
               <label htmlFor="pet">Pet Policy</label>
-              <select name="pet">
+              <select 
+                name="pet" 
+       
+              >
                 <option value="allowed">Allowed</option>
-                <option value="not-allowed" defaultChecked>Not Allowed</option>
+                <option value="not-allowed">Not Allowed</option>
               </select>
             </div>
-            <div className="item">
+            
+            <div className="form-group">
               <label htmlFor="income">Income Policy</label>
               <input
                 id="income"
                 name="income"
                 type="text"
                 placeholder="Income Policy"
+              
                 required
               />
             </div>
-            <div className="item">
-              <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number" required/>
+          </div>
+          
+          <div className={`tab-content ${activeTab === 'location' ? 'active' : ''}`}>
+            <div className="form-group">
+              <label htmlFor="address">Address</label>
+              <input id="address" name="address" type="text" required />
             </div>
-            <div className="item">
-              <label htmlFor="school">School</label>
-              <input min={0} id="school" name="school" type="number" required/>
+            
+            <div className="form-group">
+              <label htmlFor="city">City</label>
+              <input id="city" name="city" type="text" required />
             </div>
-            <div className="item">
-              <label htmlFor="bus">bus</label>
-              <input min={0} id="bus" name="bus" type="number"  required/>
+            
+            <div className="form-group">
+              <label htmlFor="latitude">Latitude</label>
+              <input id="latitude" name="latitude" type="text"  required />
             </div>
-            <div className="item">
-              <label htmlFor="restaurant">Restaurant</label>
+            
+            <div className="form-group">
+              <label htmlFor="longitude">Longitude</label>
+              <input id="longitude" name="longitude" type="text" required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="school">Distance to School (miles)</label>
+              <input min={0} id="school" name="school" type="number" required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="bus">Distance to Bus (miles)</label>
+              <input min={0} id="bus" name="bus" type="number"  required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="restaurant">Distance to Restaurant (miles)</label>
               <input min={0} id="restaurant" name="restaurant" type="number" required />
             </div>
-            <button className="sendButton">Add</button>
-          </form>
-        </div>
-      </div>
-      <div className="sideContainer">
-        {images.map((image,index) => (
-          <img
-            key={index}
-            src={image}
-            alt="Uploaded"
-
-          />
+          </div>
           
-        ))}
-        <UploadWidget uwConfig={{
-          multiple:true,
-          cloudName:  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-            uploadPreset:  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
-            // maxImageFileSize: 2000000,
-            folder:"posts",
+          <div className={`tab-content ${activeTab === 'images' ? 'active' : ''}`}>
+            <div className="images-container">
+              {images.length > 0 ? (
+                <div className="image-grid">
+                  {images.map((image, index) => (
+                    <div className="image-item" key={index}>
+                      <img src={image} alt={`Property ${index + 1}`} />
+                      <button 
+                        type="button"
+                        className="delete-button" 
+                        onClick={() => handleRemoveImage(image)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-images">No images uploaded yet</div>
+              )}
+              
+              <div className="upload-container">
+                <UploadWidget 
+                  uwConfig={{
+                    multiple: true,
+                    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+                    uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+                    folder: "posts",
+                  }}
+                  setState={setImages}
+                />
+              </div>
+            </div>
+          </div>
           
-        }}
-        setState={setImages}
-        />
+          <div className="form-actions">
+            {activeTab !== 'basic' && (
+              <button 
+                type="button" 
+                className="prev-button"
+                onClick={() => {
+                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const currentIndex = tabs.indexOf(activeTab);
+                  setActiveTab(tabs[currentIndex - 1]);
+                }}
+              >
+                Previous
+              </button>
+            )}
+            
+            {activeTab !== 'images' && (
+              <button 
+                type="button"
+                className="next-button"
+                onClick={() => {
+                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const currentIndex = tabs.indexOf(activeTab);
+                  setActiveTab(tabs[currentIndex + 1]);
+                }}
+              >
+                Next
+              </button>
+            )}
+            
+            <button type="submit" className="submit-button">Post</button>
+          </div>
+        </form>
       </div>
     </div>
   );
