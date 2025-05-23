@@ -68,18 +68,25 @@ model PostDetail{
   utilities   String?
   pet       String?
   income   String?
-  size      Int?
+  size      Int?  //size in ana
+  builduparea  Int?  //build up in sq ft 12 feet
+  roadacess  String? //WEST,SOUTH,EAST,NORTH
+  Facing  Int?  //3,2,4.5
+  floor    Int? //5,4,
+  builtyear  Int? //2070,2092
+  parking   String? //2 car,bike
+  amenities  String?  //['Earthquake Resistant', 'Marbel', 'Parquet', 'Parking', 'Drinking Water', 'Terrace', 'Modular Kitchen', 'Closet', 'Dining Room', 'Pantry', 'Bed Room',Earthquake Resistant', 'Terrace', 'Parking', 'Drinking Water', 'Balcony', 'Bed Room', 'Closet', 'Internet', 'AirCon]"
   school   Int?
   bus  Int?
   restaurant  Int?
-  post Post @relation(fields: [postId] , references: [id])
+  post Post @relation(fields: [postId] , references: [id] ,onDelete: Cascade)
   postId String @db.ObjectId @unique
 }
 
 model  SavedPost{
   id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  user User @relation(fields: [userId] , references: [id])
-  post Post @relation(fields: [postId] , references: [id])
+  user User @relation(fields: [userId] , references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId] , references: [id], onDelete: Cascade)
   userId String @db.ObjectId
   postId String @db.ObjectId
   createdAt  DateTime    @default(now())
@@ -104,7 +111,7 @@ model Message{
   
   text     String
   userId String
-  chat Chat @relation(fields: [chatId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @db.ObjectId
   createdAt DateTime    @default(now())
 
