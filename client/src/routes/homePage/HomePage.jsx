@@ -1,11 +1,16 @@
-import { useContext } from "react";
+import { useContext,useEffect } from "react";
 import SearchBar from "../../components/searchBar/SearchBar";
 import "./homePage.scss";
 import { AuthContext } from "../../context/AuthContext";
+import { useToast } from '../../context/ToastContext.jsx';
+
 
 function HomePage() {
   const {currentUser} = useContext(AuthContext);
-  console.log(currentUser);
+   const { showToast } = useToast();
+   useEffect(() => {
+       showToast('Welcome '+currentUser.username, 'info');
+     }, [showToast]);
   return (
     <div className="homePage">
       <div className="textContainer">

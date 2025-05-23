@@ -1,10 +1,15 @@
 // UserInfo.js
 import React from 'react';
 import './userInfo.scss'; // Import the SCSS file
+import { useState } from 'react';
+import Alert from '../../components/alert/Alert'; // Import the Alert component
 
 const UserInfo = ({ currentUser, handleLogout }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+  
   return (
     <div className="user-info">
+       <Alert handleAction={handleLogout} setShowConfirm={setShowConfirm} showConfirm={showConfirm} message='You Wanna Logout ?' btnText="Yes,Logout"/>
       <div className="user-info__avatar">
         <img
           src={currentUser.avatar || '/noavatar.jpg'}
@@ -19,7 +24,7 @@ const UserInfo = ({ currentUser, handleLogout }) => {
           E-mail: <b>{currentUser.email}</b>
         </span>
       </div>
-      <button className="user-info__logout-btn" onClick={handleLogout}>
+      <button className="user-info__logout-btn" onClick={() => setShowConfirm(true)}>
         Logout
       </button>
     </div>

@@ -7,7 +7,7 @@ function Map({data}){
   console.log( data)
   return (
    
-    <MapContainer center={data.length == 1 ? [data[0].latitude,data[0].longitude]: [28.2082,83.9787]} zoom={13} scrollWheelZoom={false} className='map'>
+    <MapContainer center={data.length == 1 ? [data[0].latitude,data[0].longitude]: [28.2082,83.9787]} zoom={6} scrollWheelZoom={false} className='map'>
     <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

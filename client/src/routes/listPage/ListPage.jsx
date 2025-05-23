@@ -5,9 +5,17 @@ import Card from "../../components/card/Card"
 import Map from "../../components/map/Map";
 import { useLoaderData,Await } from "react-router-dom";
 import { Suspense } from "react";
+import { useToast } from '../../context/ToastContext.jsx';
+import { useEffect } from 'react';
+
 
 function ListPage() {
   const data = useLoaderData();
+  const { showToast } = useToast();
+    useEffect(() => {
+      showToast('You can play around  Map to get locations', 'success');
+    }, [showToast]);
+  
   return <div className="listPage">
     <div className="listContainer">
       <div className="wrapper">

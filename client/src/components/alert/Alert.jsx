@@ -1,6 +1,6 @@
 import './alert.scss'
 
-const Alert = ({setShowConfirm,handleDelete,showConfirm}) => {
+const Alert = ({setShowConfirm,handleAction,showConfirm,message,btnText}) => {
     
   return (
         <>
@@ -8,7 +8,7 @@ const Alert = ({setShowConfirm,handleDelete,showConfirm}) => {
   <div className="confirm-modal">
     <div className="modal-content">
       <h2 className="modal-title">Are you sure?</h2>
-      <p className="modal-message">This action cannot be undone.</p>
+      <p className="modal-message">{message}</p>
       <div className="modal-buttons">
         <button
           onClick={() => setShowConfirm(false)}
@@ -19,11 +19,11 @@ const Alert = ({setShowConfirm,handleDelete,showConfirm}) => {
         <button
           onClick={() => {
             setShowConfirm(false);
-            handleDelete();
+            handleAction();
           }}
           className="modal-btn confirm"
         >
-          Yes, Delete
+          {btnText}
         </button>
       </div>
     </div>

@@ -6,12 +6,15 @@ import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Suspense, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import UserInfo from "./UserInfo.jsx";
+import { useToast } from "../../context/ToastContext";
+
 
 function ProfilePage() {
   const data = useLoaderData();
   const {updateUser,currentUser} = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
 
 
@@ -19,6 +22,7 @@ function ProfilePage() {
     try {
       await  apiRequest.post("/auth/logout");
       updateUser(null);
+      showToast("Logout Successfully", 'success');
     // localStorage.removeItem("user");
     navigate("/");
     }

@@ -65,7 +65,7 @@ export const updateUser =  async (req, res) => {
     }
     catch(err){
         console.error(err);
-        res.status(500).json({message: "Failed to update users"});
+        res.status(500).json({message: "Username or email already exist"});
     }
 }
 

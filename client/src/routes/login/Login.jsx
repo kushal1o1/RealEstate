@@ -4,11 +4,14 @@ import { useState } from "react";
 import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
+import { useToast } from "../../context/ToastContext";
 
 function Login() {
   const [error,setError] = useState('');
   const [isLoading,setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  
 
     const {updateUser} = useContext(AuthContext);
 
@@ -31,7 +34,8 @@ function Login() {
         navigate('/');
     } catch (err) {
       console.error(err);
-      setError('An error occurred. Please try again later.');
+      // setError('An error occurred. Please try again later.');
+      showToast("Invalid Credentials", 'error');
     } finally {
       setIsLoading(false);
     }

@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import apiRequest from "../../lib/apiRequest";
+import { useToast } from "../../context/ToastContext";
 
 
 function Register() {
    const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+    const { showToast } = useToast();
+  
 
    const navigate = useNavigate();
   const handleSubmit = async (e) => {
@@ -33,7 +36,8 @@ function Register() {
     }
     catch(err){
       console.log(err);
-      setError(err.response.data.message);
+      showToast("Username Already Exist", 'error');
+      // setError(err.response.data.message);
     }
     finally{
 
@@ -46,7 +50,7 @@ function Register() {
         <form onSubmit={handleSubmit}>
           <h1>Create an Account</h1>
           <input name="username" type="text" placeholder="Username" />
-          <input name="email" type="text" placeholder="Email" />
+          <input name="email" type="email" placeholder="Email" />
           <input name="password" type="password" placeholder="Password" />
           <button disabled={isLoading}>Register</button>
           {error && <span className="error">{error}</span>}

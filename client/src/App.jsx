@@ -28,11 +28,7 @@ function App() {
           element: <ListPage />,
           loader: listPageLoader,
         },
-        {
-          path: '/:id',
-          element: <SinglePage />,
-          loader:singlePageLoader,
-        },
+        
 
         {
           path:"/login",
@@ -60,6 +56,7 @@ function App() {
       path:'/',
       element:<RequireAuth/>,
       children:[
+
         {
           path: '/profile',
           element: <ProfilePage />,
@@ -76,7 +73,12 @@ function App() {
         {
           path:'/post/update/:id',
           element:<UpdatePostPage/>,
-        }
+        },  
+        {
+          path: '/:id',
+          element: <SinglePage />,
+          loader:singlePageLoader,
+        },
       ]
 
     }

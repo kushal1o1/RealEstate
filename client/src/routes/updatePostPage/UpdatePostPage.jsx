@@ -5,6 +5,7 @@ import 'quill/dist/quill.snow.css';
 import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate, useParams } from "react-router-dom";
+import { useToast } from "../../context/ToastContext";
 
 function UpdatePostPage() {
   const [error, setError] = useState('');
@@ -16,6 +17,8 @@ function UpdatePostPage() {
   const [activeTab, setActiveTab] = useState('basic');
   const navigate = useNavigate();
   const quillInstance = useRef(null);
+  const { showToast } = useToast();
+  
 
   useEffect(() => {
     fetchPost();
@@ -108,8 +111,10 @@ function UpdatePostPage() {
           restaurant: parseInt(inputs.restaurant),
         }
       });
+      showToast("Post Updated Successfully", 'success');
       navigate('/' + res.data.id);
     } catch (error) {
+      showToast("Error updating post", 'error');
       console.error("Error updating post:", error);
       setError(error);
     }

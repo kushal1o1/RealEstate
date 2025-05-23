@@ -5,13 +5,16 @@ import 'quill/dist/quill.snow.css'; // Import default theme
 import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../context/ToastContext";
 
 function NewPostPage() {
   const [error, setError] = useState(''); 
   const[images, setImages] = useState([]);
   const [value, setValue] = useState(''); 
- const editorRef = useRef(null);     // Reference to the container div
+  const editorRef = useRef(null);     // Reference to the container div
   const [activeTab, setActiveTab] = useState('basic');
+  const { showToast } = useToast();
+  
  
    const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
@@ -77,9 +80,11 @@ useEffect(() => {
 
        }
       });
+      showToast("Post Created Successfully", 'success');
       navigate('/'+ res.data.id);
       
     } catch (error) {
+      showToast("Error creating post", 'error');
       console.error("Error adding post:", error);
       setError(error)
       

@@ -5,12 +5,15 @@ import { useState } from "react";
 import  apiRequest  from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
+import { useToast } from "../../context/ToastContext";
 
 
 function ProfileUpdatePage() {
   const [error, setError] = useState('');
   const {currentUser ,updateUser} = useContext(AuthContext);
   const [avatar, setAvatar] = useState([]);
+  const { showToast } = useToast();
+  
 
   const navigate = useNavigate();
 
@@ -26,10 +29,12 @@ function ProfileUpdatePage() {
         avatar:avatar[0],
       });
       updateUser(res.data);
+      showToast("Profile Updated Successfully", 'success');
       navigate("/profile");
       
     } catch (error) {
       console.error("Error updating user:", error);
+      showToast(error.response.data.message, 'error');
       setError(error.response.data.message || "An error occurred while updating the user.");
       
     }
