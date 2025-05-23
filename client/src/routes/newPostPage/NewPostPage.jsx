@@ -102,7 +102,7 @@ useEffect(() => {
   return (
     <div className="updatePostPage">
       <div className="container">
-        <h1>Update Post</h1>
+        <h1>Create Post</h1>
         
         {error && <div className="error-message">{error.message}</div>}
         
