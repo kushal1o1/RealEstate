@@ -38,22 +38,7 @@ function ProfilePage() {
             <button>Update Profile</button>
             </Link>
           </div>
-          {/* <div className="info">
-            <span>
-              Avatar:
-              <img
-                src={currentUser.avatar || '/noavatar.jpg'}
-                alt=""
-              />
-            </span>
-            <span>
-              Username: <b>{currentUser.username}</b>
-            </span>
-            <span>
-              E-mail: <b>{currentUser.email}</b>
-            </span>
-            <button onClick={handleLogout}>Logout</button>
-          </div> */}
+
           <UserInfo  currentUser={currentUser} handleLogout={handleLogout}/>
           <div className="title">
             <h1>My List</h1>
@@ -66,17 +51,17 @@ function ProfilePage() {
         <Await resolve={data.postResponse}
         errorElement={<div>Error loading posts</div>}
         >
-          {(postResponse) => <List posts={postResponse.data.userPosts}/>}
+          {(postResponse) => <List posts={postResponse.data.userPosts} canDelete={true}/>}
         </Await>
         </Suspense>
           <div className="title">
             <h1>Saved List</h1>
-          </div>
+          </div>.
                   <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={data.postResponse}
         errorElement={<div>Error loading posts</div>}
         >
-          {(postResponse) => <List posts={postResponse.data.savedPosts}/>}
+          {(postResponse) => <List posts={postResponse.data.savedPosts}  canDelete={false}/>}
         </Await>
         </Suspense>
         </div>

@@ -6,7 +6,7 @@ import apiRequest from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
 
 
-function Card({ item }) {
+function Card({ item ,canDelete=false}) {
   const {currentUser} = useContext(AuthContext); 
   const navigator = useNavigate();
 
@@ -53,9 +53,21 @@ function Card({ item }) {
           </div>
           <div className="icons">
             <div className='update'>
+              {canDelete &&
+              <>
+              <img src="/delete.png" alt="delete" onClick={async () => {
+                try{
+                  await apiRequest.delete(`/posts/${item.id}`);
+                  window.location.reload();
+                }catch(err){
+                  console.log(err);
+                }
+              }}/>
               <Link to={`/post/update/${item.id}`}>
                 <img src="/save.png" alt="update" />
               </Link>
+              </>
+    }
             </div>
             <div className="icon" onClick={handleMessageClick}>
               <img src="/chat.png" alt="update" />
