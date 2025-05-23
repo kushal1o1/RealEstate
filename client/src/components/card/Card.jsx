@@ -1,15 +1,26 @@
 import { Link } from "react-router-dom";
 import "./card.scss";
-import { useContext } from "react";
+import { useContext,useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
+import Alert from "../alert/Alert";
 
 
 function Card({ item ,canDelete=false}) {
   const {currentUser} = useContext(AuthContext); 
   const navigator = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
 
+
+  const handleDelete = async () => {
+    try {
+      await apiRequest.delete(`/posts/${item.id}`);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
     const handleMessageClick = async () => {
     if(!currentUser){
       redirect('/login');
@@ -28,6 +39,8 @@ function Card({ item ,canDelete=false}) {
   }
   return (
     <div className="card">
+      <Alert handleDelete={handleDelete} setShowConfirm={setShowConfirm} showConfirm={showConfirm}/>
+
       <Link to={`/${item.id}`} className="imageContainer">
         <img src={item.images[0]} alt="" />
       </Link>
@@ -52,23 +65,18 @@ function Card({ item ,canDelete=false}) {
             </div>
           </div>
           <div className="icons">
-            <div className='update'>
               {canDelete &&
               <>
-              <img src="/delete.png" alt="delete" onClick={async () => {
-                try{
-                  await apiRequest.delete(`/posts/${item.id}`);
-                  window.location.reload();
-                }catch(err){
-                  console.log(err);
-                }
-              }}/>
-              <Link to={`/post/update/${item.id}`}>
-                <img src="/save.png" alt="update" />
+            <div className='icon'>
+              <img src="/delete.png" alt="delete" onClick={() => setShowConfirm(true)}/>
+            </div>
+            <div className="icon">
+              <Link  to={`/post/update/${item.id}`}>
+                <img src="/update.png" alt="update" />
               </Link>
+              </div>
               </>
     }
-            </div>
             <div className="icon" onClick={handleMessageClick}>
               <img src="/chat.png" alt="update" />
             </div>
