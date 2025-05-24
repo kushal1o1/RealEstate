@@ -27,6 +27,7 @@ function ProfilePage() {
     navigate("/");
     }
     catch (err) {
+      showToast("Logout Failed", 'error');
       console.error(err);
     }
   };

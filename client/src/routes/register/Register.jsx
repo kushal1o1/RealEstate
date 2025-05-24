@@ -31,12 +31,14 @@ function Register() {
         password,
       });
       // console.log(res.data);
+      showToast("Registration Successful", 'success');
+      showToast("Please Login", 'success');
       navigate('/login');
       // setError(res.data);
     }
     catch(err){
       console.log(err);
-      showToast("Username Already Exist", 'error');
+      showToast("Username or Email Already Exist", 'error');
       // setError(err.response.data.message);
     }
     finally{

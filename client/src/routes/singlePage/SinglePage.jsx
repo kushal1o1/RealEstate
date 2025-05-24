@@ -7,23 +7,30 @@ import DOMPurify from "dompurify";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
+import { useToast } from "../../context/ToastContext";
 
 function SinglePage() {
   const post = useLoaderData();
   const [saved, setSaved] = useState(post.isSaved);
   const {currentUser} = useContext(AuthContext); 
   const navigator = useNavigate();
+  const { showToast } = useToast();
+  
   // console.log(post);
   const handleSave = async () => {
     // TODO:optimistics hook use ok later
     setSaved(!saved);
     try{
       if(!currentUser){
+        showToast("Please login to save the post", 'error');
         redirect('/login');
       }
       await apiRequest.post('/users/save',{postId:post.id});
+      showToast(saved ? "Post Removed from Saved" : "Post Saved", 'success');
+
 
     }catch(err){
+      showToast("An error occurred while saving the post", 'error');
       console.log(err);
     setSaved(!saved);
 
@@ -31,17 +38,21 @@ function SinglePage() {
   }
   const handleMessageClick = async () => {
     if(!currentUser){
+      showToast("Please login to send a message", 'error');
       redirect('/login');
     }
     if(currentUser.id == post.userId){
+      showToast("You cannot send a message to yourself", 'error');
       navigator('/profile');
       return;
     }
     try{
       await apiRequest.post('/chats',{receiverId:post.userId});
+      showToast("Redirecting to Chat", 'success');
       navigator('/profile');
 
     }catch(err){
+      showToast("An error occurred while redirecting the message", 'error');
       console.log(err);
     }
   }

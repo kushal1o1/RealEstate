@@ -31,6 +31,7 @@ function Login() {
          password }
       );
       updateUser(res.data);
+      showToast("Login Successful", 'success');
         navigate('/');
     } catch (err) {
       console.error(err);

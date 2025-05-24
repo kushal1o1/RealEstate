@@ -94,6 +94,7 @@ useEffect(() => {
 
     const handleRemoveImage = (imageToRemove) => {
     setImages((prev) => prev.filter((img) => img !== imageToRemove));
+    showToast("Image Removed", 'success');
   };
 
   const handleChange = (e) => {

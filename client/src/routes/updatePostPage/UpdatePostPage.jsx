@@ -78,6 +78,7 @@ function UpdatePostPage() {
 
   const handleRemoveImage = (imageToRemove) => {
     setImages((prev) => prev.filter((img) => img !== imageToRemove));
+    showToast("Image removed successfully", 'success');
   };
 
   const handleSumbit = async (e) => {
