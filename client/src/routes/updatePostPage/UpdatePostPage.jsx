@@ -6,6 +6,8 @@ import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
+import Loader from "../../components/loader/Loader";
+
 
 function UpdatePostPage() {
   const [error, setError] = useState('');
@@ -18,6 +20,7 @@ function UpdatePostPage() {
   const navigate = useNavigate();
   const quillInstance = useRef(null);
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   
 
   useEffect(() => {
@@ -62,6 +65,7 @@ function UpdatePostPage() {
 
   const fetchPost = async () => {
     try {
+      setIsLoading(true);
       const res = await apiRequest.get("/posts/" + id);
       const postData = res.data;
       setPost(postData);
@@ -70,7 +74,9 @@ function UpdatePostPage() {
         quillInstance.current.root.innerHTML = postData.postDetail.desc;
         setValue(postData.postDetail.desc);
       }
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching post:", error);
       setError(error);
     }
@@ -82,6 +88,7 @@ function UpdatePostPage() {
   };
 
   const handleSumbit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
@@ -113,8 +120,10 @@ function UpdatePostPage() {
         }
       });
       showToast("Post Updated Successfully", 'success');
+      setIsLoading(false);
       navigate('/' + res.data.id);
     } catch (error) {
+      setIsLoading(false);
       showToast("Error updating post", 'error');
       console.error("Error updating post:", error);
       setError(error);
@@ -127,6 +136,8 @@ function UpdatePostPage() {
         <h1>Update Post</h1>
         
         {error && <div className="error-message">{error.message}</div>}
+        {isLoading && <Loader message="Loading..." />}
+
         
         <div className="tabs">
           <button 
