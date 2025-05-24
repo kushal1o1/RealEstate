@@ -6,6 +6,8 @@ import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
+import Loader from "../../components/loader/Loader";
+
 
 function NewPostPage() {
   const [error, setError] = useState(''); 
@@ -14,6 +16,7 @@ function NewPostPage() {
   const editorRef = useRef(null);     // Reference to the container div
   const [activeTab, setActiveTab] = useState('basic');
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   
  
    const  navigate = useNavigate();
@@ -48,6 +51,7 @@ useEffect(() => {
 }, []);
 
   const handleSumbit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
@@ -82,8 +86,10 @@ useEffect(() => {
       });
       showToast("Post Created Successfully", 'success');
       navigate('/'+ res.data.id);
+      setIsLoading(false);
       
     } catch (error) {
+      setIsLoading(false);
       showToast("Error creating post", 'error');
       console.error("Error adding post:", error);
       setError(error)
@@ -111,6 +117,7 @@ useEffect(() => {
         <h1>Create Post</h1>
         
         {error && <div className="error-message">{error.message}</div>}
+        {isLoading && <Loader message="Creating Post..." />}
         
         <div className="tabs">
           <button 

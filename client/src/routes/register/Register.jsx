@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import apiRequest from "../../lib/apiRequest";
 import { useToast } from "../../context/ToastContext";
+import Loader from "../../components/loader/Loader";
 
 
 function Register() {
@@ -24,7 +25,7 @@ function Register() {
     const password = formData.get("password");
 
     try{
-
+      setIsLoading(true);
       const res = await apiRequest.post('/auth/register', {
         username,
         email,
@@ -34,9 +35,11 @@ function Register() {
       showToast("Registration Successful", 'success');
       showToast("Please Login", 'success');
       navigate('/login');
+      setIsLoading(false);
       // setError(res.data);
     }
     catch(err){
+      setIsLoading(false);
       console.log(err);
       showToast("Username or Email Already Exist", 'error');
       // setError(err.response.data.message);
@@ -56,6 +59,7 @@ function Register() {
           <input name="password" type="password" placeholder="Password" />
           <button disabled={isLoading}>Register</button>
           {error && <span className="error">{error}</span>}
+          {isLoading && <Loader message="Registering..." />}
           <Link to="/login">Do you have an account?</Link>
         </form>
       </div>

@@ -7,6 +7,7 @@ import { useLoaderData,Await } from "react-router-dom";
 import { Suspense } from "react";
 import { useToast } from '../../context/ToastContext.jsx';
 import { useEffect } from 'react';
+import Loader from "../../components/loader/Loader";
 
 
 function ListPage() {
@@ -20,9 +21,9 @@ function ListPage() {
     <div className="listContainer">
       <div className="wrapper">
         <Filter/>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader message="Loading Posts..." />}>
         <Await resolve={data.postResponse}
-        errorElement={<div>Error loading posts</div>}
+        errorElement={<Loader message="Error loading posts" />}
         >
          
           {(postResponse) => (postResponse.data.map(item=>(
@@ -37,9 +38,9 @@ function ListPage() {
       </div>
     </div>
     <div className="mapContainer">
-       <Suspense fallback={<div>Loading...</div>}>
+       <Suspense fallback={<Loader message="Loading Map..." />}>
         <Await resolve={data.postResponse}
-        errorElement={<div>Error loading posts</div>}
+        errorElement={<Loader message="Error loading map" />}
         >
           {(postResponse) => (
             <Map data={postResponse.data}/>

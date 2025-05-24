@@ -5,6 +5,8 @@ import apiRequest from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import { useToast } from "../../context/ToastContext";
+import Loader from "../../components/loader/Loader";
+
 
 function Login() {
   const [error,setError] = useState('');
@@ -24,6 +26,7 @@ function Login() {
     const password = formData.get("password");
 
     setIsLoading(true);
+
     try {
       const res = await apiRequest.post('/auth/login', 
       {
@@ -53,6 +56,7 @@ function Login() {
           <button disabled={isLoading}>Login</button>
           {error && <span className="error">{error}</span>}
           <Link to="/register">{"Don't"} you have an account?</Link>
+          {isLoading && <Loader message="Logging in..." />}
         </form>
       </div>
       <div className="imgContainer">

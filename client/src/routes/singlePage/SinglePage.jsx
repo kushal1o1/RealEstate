@@ -9,13 +9,13 @@ import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { useToast } from "../../context/ToastContext";
 
+
 function SinglePage() {
   const post = useLoaderData();
   const [saved, setSaved] = useState(post.isSaved);
   const {currentUser} = useContext(AuthContext); 
   const navigator = useNavigate();
   const { showToast } = useToast();
-  
   // console.log(post);
   const handleSave = async () => {
     // TODO:optimistics hook use ok later

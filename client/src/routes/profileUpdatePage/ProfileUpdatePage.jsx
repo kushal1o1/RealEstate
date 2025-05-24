@@ -6,6 +6,8 @@ import  apiRequest  from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useToast } from "../../context/ToastContext";
+import Loader from "../../components/loader/Loader";
+
 
 
 function ProfileUpdatePage() {
@@ -13,11 +15,13 @@ function ProfileUpdatePage() {
   const {currentUser ,updateUser} = useContext(AuthContext);
   const [avatar, setAvatar] = useState([]);
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     const formData = new FormData(e.target);
     const { username, email, password } = Object.fromEntries(formData);
@@ -31,8 +35,10 @@ function ProfileUpdatePage() {
       updateUser(res.data);
       showToast("Profile Updated Successfully", 'success');
       navigate("/profile");
+      setIsLoading(false);
       
     } catch (error) {
+      setIsLoading(false);
       console.error("Error updating user:", error);
       showToast(error.response.data.message, 'error');
       setError(error.response.data.message || "An error occurred while updating the user.");
@@ -41,6 +47,7 @@ function ProfileUpdatePage() {
   }
   return (
     <div className="profileUpdatePage">
+  
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
           <h1>Update Profile</h1>
@@ -66,8 +73,12 @@ function ProfileUpdatePage() {
             <label htmlFor="password">Password</label>
             <input id="password" name="password" type="password" />
           </div>
+
+          {isLoading && <Loader message="Updating Profile..." />}
+
           <button>Update</button>
           {error && <p className="error">{error}</p>}
+        
         </form>
       </div>
       <div className="sideContainer">
