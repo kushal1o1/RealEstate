@@ -14,6 +14,7 @@ nav {
       display: none;
     }
 
+
     &:hover {
       scale: 1.05;
     }
@@ -140,9 +141,11 @@ nav {
       align-items: center;
       justify-content: center;
       font-size: 24px;
+      display: none;
 
       &.active {
         right: 0;
+        display: flex;
       }
 
       @include sm {
