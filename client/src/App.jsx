@@ -13,6 +13,7 @@ import Contact from './routes/contactPage/Contact'
 import Agent from './routes/agentPage/Agent'
 import About from './routes/aboutPage/About'
 import UpdatePostPage from './routes/updatePostPage/UpdatePostPage'
+import AdminDashboard from './routes/adminDashboard/adminDashboard.jsx'
 function App() {
   const router = createBrowserRouter([
     {
@@ -79,9 +80,14 @@ function App() {
           element: <SinglePage />,
           loader:singlePageLoader,
         },
+           
       ]
 
-    }
+    },
+    {
+      path: '/admin-dashboard',
+      element: <AdminDashboard />,
+    },
   ])
 
   return (
