@@ -495,6 +495,55 @@ export const deleteMessage = async (req, res) => {
     }
 };
 
+export const getMessageById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const message = await prisma.message.findUnique({
+            where: { id },
+            include: {
+                chat: {
+                    include: {
+                        users: {
+                            select: {
+                                id: true,
+                                username: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!message) {
+            return res.status(404).json({ message: "Message not found!" });
+        }
+
+        // Get the user who sent the message
+        const user = await prisma.user.findUnique({
+            where: { id: message.userId },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                avatar: true
+            }
+        });
+
+        // Add user info to the message object
+        const messageWithUser = {
+            ...message,
+            user
+        };
+
+        res.status(200).json(messageWithUser);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Failed to get message!" });
+    }
+};
+
 // Saved Posts Management
 export const getAllSavedPosts = async (req, res) => {
     try {
@@ -560,6 +609,56 @@ export const deleteSavedPost = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Failed to delete saved post!" });
+    }
+};
+
+export const getSavedPostById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const savedPost = await prisma.savedPost.findUnique({
+            where: { id },
+            include: {
+                post: {
+                    include: {
+                        postDetail: true,
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!savedPost) {
+            return res.status(404).json({ message: "Saved post not found!" });
+        }
+
+        // Get the user who saved the post
+        const user = await prisma.user.findUnique({
+            where: { id: savedPost.userId },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                avatar: true
+            }
+        });
+
+        // Add user info to the saved post object
+        const savedPostWithUser = {
+            ...savedPost,
+            user
+        };
+
+        res.status(200).json(savedPostWithUser);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Failed to get saved post!" });
     }
 };
 

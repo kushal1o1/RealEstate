@@ -14,9 +14,19 @@ const token = req.cookies.token;
                 message:"Token is not valid!"
             });
         req.userId = payload.id;
+        req.isAdmin = payload.isAdmin;
         next();
     }
     );
+}
+
+// Middleware to check if user is admin
+export const verifyAdmin = (req, res, next) => {
+    console.log(req.isAdmin)
+    if (!req.isAdmin) {
+        return res.status(403).json({ message: "Access denied! Admin access required" });
+    }
+    next();
 }
 
 
