@@ -3,26 +3,27 @@
 .updatePostPage {
   min-height: 90vh;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-alt);
   
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: white;
+    background-color: var(--color-bg);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 30px;
+    border: 1px solid var(--color-border);
     
     h1 {
       margin-bottom: 24px;
       text-align: center;
-      color: black;
+      color: var(--color-text);
       font-size: 28px;
     }
     
     .error-message {
-      background-color: #ffebee;
-      color: #c62828;
+      background-color: var(--color-error-bg, #ffebee);
+      color: var(--color-error, #c62828);
       padding: 12px;
       border-radius: 4px;
       margin-bottom: 20px;
@@ -38,21 +39,28 @@
       
       button {
         padding: 12px 24px;
-        background-color: #f0f0f0;
-        border: none;
+        background-color: var(--color-bg-alt);
+        border: 1px solid var(--color-border);
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 500;
-        color: #555;
+        color: var(--color-text-secondary);
         
         &:hover {
-          background-color: #e0e0e0;
+          background-color: var(--color-bg);
+          border-color: var(--color-text-secondary);
         }
         
         &.active {
-          background-color: black;
+          background-color: var(--color-primary);
           color: white;
+          border-color: var(--color-primary);
+          
+          &:hover {
+            background-color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+          }
         }
         
         @media (max-width: 768px) {
@@ -88,25 +96,27 @@
         
         label {
           font-weight: 500;
-          color: #333;
+          color: var(--color-text);
         }
         
         input, select {
           padding: 12px;
-          border: 1px solid #ddd;
+          border: 1px solid var(--color-border);
           border-radius: 4px;
           font-size: 14px;
+          background-color: var(--color-bg);
+          color: var(--color-text);
           
           &:focus {
             outline: none;
-            border-color: black;
-            box-shadow: 0 0 0 2px rgba(black, 0.1);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
           }
         }
         
         select {
           appearance: none;
-          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
           background-repeat: no-repeat;
           background-position: right 12px center;
           background-size: 16px;
@@ -128,31 +138,33 @@
       
       // Editor styles
       .editor-container {
+        width: 100%;
+        
         .ql-container {
           font-family: 'Segoe UI', sans-serif;
           font-size: 16px;
           border-radius: 0 0 8px 8px;
-          border: 1px solid #ddd;
+          border: 1px solid var(--color-border);
           border-top: none;
-          background-color: #fff;
+          background-color: var(--color-bg);
           min-height: 200px;
         }
         
         .ql-toolbar {
           border-radius: 8px 8px 0 0;
-          border: 1px solid #ddd;
-          background-color: #f9f9f9;
+          border: 1px solid var(--color-border);
+          background-color: var(--color-bg-alt);
           
           button {
-            color: #333;
+            color: var(--color-text);
             
             &:hover {
-              background-color: #ececec;
+              background-color: var(--color-bg);
             }
           }
           
           .ql-picker {
-            color: #333;
+            color: var(--color-text);
           }
         }
         
@@ -160,6 +172,7 @@
           min-height: 200px;
           font-size: 15px;
           line-height: 1.6;
+          color: var(--color-text);
           
           p {
             margin-bottom: 10px;
@@ -183,6 +196,7 @@
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             aspect-ratio: 16/9;
+            border: 1px solid var(--color-border);
             
             img {
               width: 100%;
@@ -214,7 +228,7 @@
               transition: opacity 0.2s ease;
               
               &:hover {
-                background-color: rgba(220, 0, 0, 0.8);
+                background-color: var(--color-error);
               }
             }
             
@@ -227,10 +241,11 @@
         .no-images {
           text-align: center;
           padding: 40px;
-          background-color: #f5f5f5;
+          background-color: var(--color-bg-alt);
           border-radius: 6px;
-          color: #777;
+          color: var(--color-text-muted);
           margin-bottom: 24px;
+          border: 1px solid var(--color-border);
         }
         
         .upload-container {
@@ -254,36 +269,41 @@
         button {
           padding: 12px 24px;
           border-radius: 6px;
-          border: none;
+          border: 1px solid var(--color-border);
           cursor: pointer;
           font-weight: 500;
           transition: all 0.2s ease;
           
           &.prev-button {
-            background-color: #f0f0f0;
-            color: #333;
+            background-color: var(--color-bg-alt);
+            color: var(--color-text);
             
             &:hover {
-              background-color: #e0e0e0;
+              background-color: var(--color-bg);
+              border-color: var(--color-text-secondary);
             }
           }
           
           &.next-button {
-            background-color: #2196f3;
+            background-color: var(--color-primary);
             color: white;
+            border-color: var(--color-primary);
             
             &:hover {
-              background-color: #1976d2;
+              background-color: var(--color-primary-dark);
+              border-color: var(--color-primary-dark);
             }
           }
           
           &.submit-button {
-            background-color: yellow;
+            background-color: var(--color-success);
             color: white;
+            border-color: var(--color-success);
             margin-left: auto;
             
             &:hover {
-              background-color: darken(yellow, 10%);
+              background-color: var(--color-success-dark);
+              border-color: var(--color-success-dark);
             }
           }
         }
@@ -304,4 +324,21 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+// Add CSS variables for colors
+:root {
+  --color-primary-rgb: 59, 130, 246; // blue-500
+  --color-success: #4ade80; // green-400
+  --color-success-dark: #22c55e; // green-500
+  --color-error: #f87171; // red-400
+  --color-error-bg: #ffebee;
+}
+
+[data-theme="dark"] {
+  --color-primary-rgb: 37, 99, 235; // blue-600
+  --color-success: #22c55e; // green-500
+  --color-success-dark: #16a34a; // green-600
+  --color-error: #ef4444; // red-500
+  --color-error-bg: #7f1d1d;
 }
