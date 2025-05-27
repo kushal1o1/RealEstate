@@ -31,6 +31,7 @@ import PropertyPreviewModal from './components/PropertyPreviewModal/PropertyPrev
 import Chats from './components/Chats/Chats';
 import SavedPosts from './components/SavedPosts/SavedPosts';
 import Messages from './components/Messages/Messages';
+import Analytics from './components/Analytics/Analytics';
 // // Mock your apiRequest import
 // const apiRequest = {
 //   get: async (url) => {
@@ -901,7 +902,12 @@ const AdminDashboard = () => {
   const renderContent = useCallback(() => {
     switch (activeTab) {
       case 'dashboard':
-        return renderDashboard();
+        return (
+          <>
+            {renderDashboard()}
+            <Analytics />
+          </>
+        );
       case 'users':
         return renderUsers();
       case 'posts':
