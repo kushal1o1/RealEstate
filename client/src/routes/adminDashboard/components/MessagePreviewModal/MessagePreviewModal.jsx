@@ -40,9 +40,9 @@ const MessagePreviewModal = ({ message, onClose }) => {
             </h3>
             <div className="user-info">
               <img 
-                src={user?.avatar || '/placeholder.png'} 
+                src={user?.avatar || '/noavatar.jpg'} 
                 alt={user?.username}
-                className="user-info__avatar"
+                className="message-preview-user-avatar"
               />
               <div className="user-info__details">
                 <div className="user-info__name">{user?.username}</div>
@@ -57,12 +57,27 @@ const MessagePreviewModal = ({ message, onClose }) => {
               Chat Information
             </h3>
             <div className="chat-info">
-              <div className="chat-info__id">Chat #{chat?.id}</div>
-              <div className="chat-info__participants">
-                {chat?.userIDs?.length || 0} participants
-              </div>
-              <div className="chat-info__status">
-                {chat?.seenBy?.includes(user?.id) ? 'Seen' : 'Not seen'}
+              <div className="chat-info__content">
+                <div className="chat-info__meta">
+                  <div className="chat-info__detail">
+                    <MessageSquare size={16} />
+                    <span>Chat #{chat?.id}</span>
+                  </div>
+                  <div className="chat-info__detail">
+                    <User size={16} />
+                    <span>{chat?.users?.length || 0} participants</span>
+                  </div>
+                  <div className="chat-info__detail">
+                    <Calendar size={16} />
+                    <span>Created {new Date(chat?.createdAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="chat-info__messages">
+                  <div className="chat-info__message-count">
+                    <MessageSquare size={16} />
+                    <span>{chat?._count?.messages || 0} messages</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

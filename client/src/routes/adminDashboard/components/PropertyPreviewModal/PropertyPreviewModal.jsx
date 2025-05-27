@@ -149,6 +149,11 @@ const PropertyPreviewModal = ({ property, onClose }) => {
               </div>
               <div className="meta-item">
                 <User size={16} />
+                <img 
+                  src={property.user?.avatar || '/noavatar.jpg'} 
+                  alt={property.user?.username}
+                  className="property-poster-avatar"
+                />
                 <span>Posted by {property.user?.username}</span>
               </div>
               <div className="meta-item">
@@ -164,9 +169,9 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                   {property.savedPosts.map(savedPost => (
                     <div key={savedPost.id} className="saved-user">
                       <img 
-                        src={savedPost.user.avatar || '/placeholder.png'} 
+                        src={savedPost.user.avatar || '/noavatar.jpg'} 
                         alt={savedPost.user.username}
-                        className="saved-user__avatar"
+                        className="saved-user-avatar"
                       />
                       <span className="saved-user__name">{savedPost.user.username}</span>
                     </div>

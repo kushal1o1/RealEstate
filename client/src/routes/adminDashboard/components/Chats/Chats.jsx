@@ -110,7 +110,7 @@ const Chats = ({
                       {chat.users.map(user => (
                         <div key={user.id} className="chat-participant">
                           <img 
-                            src={user.avatar || '/placeholder.png'} 
+                            src={user.avatar || '/noavatar.jpg.png'} 
                             alt={user.username}
                             className="chat-participant__avatar"
                           />

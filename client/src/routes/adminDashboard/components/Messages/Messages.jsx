@@ -107,13 +107,13 @@ const Messages = ({
                     </div>
                   </td>
                   <td className="data-table__cell">
-                    <div className="user-info">
+                    <div className="table-user-info">
                       <img 
-                        src={message.chat?.users?.find(user => user.id === message.userId)?.avatar || '/placeholder.png'} 
+                        src={message.chat?.users?.find(user => user.id === message.userId)?.avatar || '/noavatar.jpg'} 
                         alt={message.chat?.users?.find(user => user.id === message.userId)?.username}
-                        className="user-info__avatar"
+                        className="table-user-info__avatar"
                       />
-                      <div className="user-info__name">
+                      <div className="table-user-info__name">
                         {message.chat?.users?.find(user => user.id === message.userId)?.username}
                       </div>
                     </div>
