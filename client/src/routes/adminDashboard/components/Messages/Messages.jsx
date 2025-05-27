@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Eye, Trash2, User, MessageSquare, Calendar } from 'lucide-react';
+import { Eye, Trash2, User, MessageSquare, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import MessagePreviewModal from '../MessagePreviewModal/MessagePreviewModal';
 import Alert from '../../../../components/alert/Alert';
 import './messages.scss';
@@ -109,12 +109,12 @@ const Messages = ({
                   <td className="data-table__cell">
                     <div className="user-info">
                       <img 
-                        src={message.user?.avatar || '/placeholder.png'} 
-                        alt={message.user?.username}
+                        src={message.chat?.users?.find(user => user.id === message.userId)?.avatar || '/placeholder.png'} 
+                        alt={message.chat?.users?.find(user => user.id === message.userId)?.username}
                         className="user-info__avatar"
                       />
                       <div className="user-info__name">
-                        {message.user?.username}
+                        {message.chat?.users?.find(user => user.id === message.userId)?.username}
                       </div>
                     </div>
                   </td>
@@ -157,9 +157,10 @@ const Messages = ({
         <div className="pagination">
           <button
             onClick={() => onPageChange(pagination.current - 1)}
-            disabled={pagination.current <= 1}
+            disabled={pagination.current <= 1 || loading}
             className="pagination__btn"
           >
+            <ChevronLeft size={16} />
             Previous
           </button>
           <div className="pagination__info">
@@ -169,13 +170,17 @@ const Messages = ({
             <span className="pagination__total">
               of {pagination.total}
             </span>
+            <span className="pagination__count">
+              ({pagination.count} total)
+            </span>
           </div>
           <button
             onClick={() => onPageChange(pagination.current + 1)}
-            disabled={pagination.current >= pagination.total}
+            disabled={pagination.current >= pagination.total || loading}
             className="pagination__btn"
           >
             Next
+            <ChevronRight size={16} />
           </button>
         </div>
       )}
