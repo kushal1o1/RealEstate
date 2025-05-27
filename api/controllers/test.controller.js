@@ -457,7 +457,8 @@ export const getAllMessages = async (req, res) => {
                             select: {
                                 id: true,
                                 username: true,
-                                email: true
+                                email: true,
+                                avatar: true
                             }
                         }
                     }
@@ -561,3 +562,158 @@ export const deleteSavedPost = async (req, res) => {
         res.status(500).json({ message: "Failed to delete saved post!" });
     }
 };
+
+export const getAnalytics = async (req, res) => {
+    try {
+        const { timeRange = 'week' } = req.query;
+        const now = new Date();
+        let startDate;
+
+        // Calculate start date based on time range
+        switch (timeRange) {
+            case 'year':
+                startDate = new Date(now.getFullYear(), 0, 1);
+                break;
+            case 'month':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            case 'week':
+            default:
+                startDate = new Date(now.setDate(now.getDate() - 7));
+                break;
+        }
+
+        // Get user growth data
+        const userGrowth = await prisma.user.groupBy({
+            by: ['createdAt'],
+            where: {
+                createdAt: {
+                    gte: startDate
+                }
+            },
+            _count: true,
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Get property listings data
+        const propertyListings = await prisma.post.groupBy({
+            by: ['createdAt'],
+            where: {
+                createdAt: {
+                    gte: startDate
+                }
+            },
+            _count: true,
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Get message trends data
+        const messageTrends = await prisma.message.groupBy({
+            by: ['createdAt'],
+            where: {
+                createdAt: {
+                    gte: startDate
+                }
+            },
+            _count: true,
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Get revenue data (example - adjust based on your actual revenue tracking)
+        const revenue = await prisma.post.groupBy({
+            by: ['createdAt', 'type'],
+            where: {
+                createdAt: {
+                    gte: startDate
+                },
+                type: {
+                    in: ['sale', 'rent']
+                }
+            },
+            _sum: {
+                price: true
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Get property types distribution
+        const propertyTypes = await prisma.post.groupBy({
+            by: ['property'],
+            _count: true,
+            orderBy: {
+                _count: {
+                    property: 'desc'
+                }
+            }
+        });
+
+        // Get top locations
+        const topLocations = await prisma.post.groupBy({
+            by: ['city'],
+            _count: true,
+            orderBy: {
+                _count: {
+                    city: 'desc'
+                }
+            },
+            take: 5
+        });
+
+        // Format the data for the frontend
+        const formatDate = (date) => {
+            return new Date(date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+        };
+
+        const formatAnalyticsData = (data, dateField = 'createdAt') => {
+            return data.map(item => ({
+                date: formatDate(item[dateField]),
+                count: item._count
+            }));
+        };
+
+        const formatRevenueData = (data) => {
+            const sales = data.filter(item => item.type === 'sale');
+            const rentals = data.filter(item => item.type === 'rent');
+            
+            return {
+                sales: sales.map(item => ({
+                    date: formatDate(item.createdAt),
+                    amount: item._sum.price || 0
+                })),
+                rentals: rentals.map(item => ({
+                    date: formatDate(item.createdAt),
+                    amount: item._sum.price || 0
+                }))
+            };
+        };
+
+        res.status(200).json({
+            userGrowth: formatAnalyticsData(userGrowth),
+            propertyListings: formatAnalyticsData(propertyListings),
+            messageTrends: formatAnalyticsData(messageTrends),
+            revenue: formatRevenueData(revenue),
+            propertyTypes: propertyTypes.map(item => ({
+                type: item.property,
+                count: item._count
+            })),
+            topLocations: topLocations.map(item => ({
+                city: item.city,
+                count: item._count
+            }))
+        });
+    } catch (err) {
+        console.error('Error fetching analytics data:', err);
+        res.status(500).json({ message: "Failed to fetch analytics data" });
+    }
+}; 
