@@ -103,30 +103,30 @@ const SavedPosts = ({
               savedPosts.map(savedPost => (
                 <tr key={savedPost.id} className="data-table__row">
                   <td className="data-table__cell">
-                    <div className="property-info">
+                    <div className="table-property-info">
                       <img 
-                        src={savedPost.post.images?.[0] || '/placeholder.png'} 
+                        src={savedPost.post.images?.[0] || '/noavatar.jpg'} 
                         alt={savedPost.post.title}
-                        className="property-info__image"
+                        className="table-property-info__image"
                       />
-                      <div className="property-info__details">
-                        <div className="property-info__title">
+                      <div className="table-property-info__details">
+                        <div className="table-property-info__title">
                           {savedPost.post.title}
                         </div>
-                        <div className="property-info__location">
+                        <div className="table-property-info__location">
                           {savedPost.post.city}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="data-table__cell">
-                    <div className="user-info">
+                    <div className="table-user-info">
                       <img 
-                        src={savedPost.user.avatar || '/placeholder.png'} 
+                        src={savedPost.user.avatar || '/noavatar.jpg'} 
                         alt={savedPost.user.username}
-                        className="user-info__avatar"
+                        className="table-user-info__avatar"
                       />
-                      <div className="user-info__name">
+                      <div className="table-user-info__name">
                         {savedPost.user.username}
                       </div>
                     </div>

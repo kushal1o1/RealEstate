@@ -25,7 +25,7 @@ const ChatPreviewModal = ({ chat, onClose }) => {
               {chat.users.map(user => (
                 <div key={user.id} className="participant-item">
                   <img 
-                    src={user.avatar || '/placeholder.png'} 
+                    src={user.avatar || '/noavatar.jpg'} 
                     alt={user.username} 
                     className="participant-item__avatar"
                   />

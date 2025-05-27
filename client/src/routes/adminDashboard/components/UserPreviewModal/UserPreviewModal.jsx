@@ -27,7 +27,7 @@ const UserPreviewModal = ({ user, onClose }) => {
           <div className="user-info">
             <div className="user-info__header">
               <img 
-                src={user.avatar || '/placeholder.png'} 
+                src={user.avatar || '/noavatar.jpg'} 
                 alt={user.username} 
                 className="user-info__avatar"
               />
@@ -99,7 +99,7 @@ const UserPreviewModal = ({ user, onClose }) => {
                 {user.savedPosts.slice(0, 3).map(savedPost => (
                   <div key={savedPost.id} className="property-card">
                     <img 
-                      src={savedPost.post.images?.[0] || '/placeholder.png'} 
+                      src={savedPost.post.images?.[0] || '/noavatar.jpg'} 
                       alt={savedPost.post.title}
                       className="property-card__image"
                     />

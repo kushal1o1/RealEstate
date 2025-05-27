@@ -32,6 +32,7 @@ import Chats from './components/Chats/Chats';
 import SavedPosts from './components/SavedPosts/SavedPosts';
 import Messages from './components/Messages/Messages';
 import Analytics from './components/Analytics/Analytics';
+import SettingsComponent from './components/Settings/Settings';
 // // Mock your apiRequest import
 // const apiRequest = {
 //   get: async (url) => {
@@ -120,7 +121,7 @@ import Analytics from './components/Analytics/Analytics';
 // };
 
 // Memoize the DashboardHeader component
-const DashboardHeader = React.memo(({ activeTab, searchTerm, setSearchTerm, onMenuClick }) => (
+const DashboardHeader = React.memo(({ activeTab, searchTerm, setSearchTerm, onMenuClick, onSettingsClick }) => (
   <header className="dashboard-header">
     <div className="dashboard-header__left">
       <button className="mobile-menu-btn" onClick={onMenuClick} title="Menu">
@@ -153,7 +154,7 @@ const DashboardHeader = React.memo(({ activeTab, searchTerm, setSearchTerm, onMe
         <button className="btn" title="Notifications">
           <Bell size={18} />
         </button>
-        <button className="btn" title="Settings">
+        <button className="btn" title="Settings" onClick={onSettingsClick}>
           <Settings size={18} />
         </button>
       </div>
@@ -358,6 +359,8 @@ const AdminDashboard = () => {
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [loadingMessage, setLoadingMessage] = useState(false);
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Memoize the fetch functions
   const fetchDashboardStats = useCallback(async () => {
@@ -714,7 +717,7 @@ const AdminDashboard = () => {
           <tr key={user.id} className="data-table__row">
             <td className="data-table__cell">
               <div className="user-info">
-                <img src={user.avatar || '/placeholder.png'} alt="" className="user-info__avatar" />
+                <img src={user.avatar || './noavatar.jpg'} alt="" className="table-user-info__avatar" />
                 <span className="user-info__name">{user.username}</span>
               </div>
             </td>
@@ -808,7 +811,7 @@ const AdminDashboard = () => {
             <td className="data-table__cell">
               <div className="property-info">
                 <img 
-                  src={post.images?.[0] || '/placeholder.png'} 
+                  src={post.images?.[0] || '/noavatar.jpg'} 
                   alt="" 
                   className="property-info__image" 
                 />
@@ -959,6 +962,14 @@ const AdminDashboard = () => {
     });
   };
 
+  const handleSettingsClick = useCallback(() => {
+    setIsSettingsOpen(true);
+  }, []);
+
+  const handleSettingsClose = useCallback(() => {
+    setIsSettingsOpen(false);
+  }, []);
+
   return (
     <div className="admin-dashboard">
       <Sidebar 
@@ -974,6 +985,7 @@ const AdminDashboard = () => {
           searchTerm={searchTerm} 
           setSearchTerm={setSearchTerm}
           onMenuClick={handleMenuClick}
+          onSettingsClick={handleSettingsClick}
         />
         
         <MobileSearch 
@@ -986,6 +998,11 @@ const AdminDashboard = () => {
           {renderContent()}
         </div>
       </main>
+
+      <SettingsComponent 
+        isOpen={isSettingsOpen}
+        onClose={handleSettingsClose}
+      />
     </div>
   );
 };

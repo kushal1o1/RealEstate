@@ -20,14 +20,16 @@ const SavedPostPreviewModal = ({ savedPost, onClose }) => {
         <div className="saved-post-preview-modal__content">
           <div className="saved-post-preview-modal__property">
             <div className="property-images">
-              {post.images?.map((image, index) => (
-                <img 
-                  key={index}
-                  src={image} 
-                  alt={`Property ${index + 1}`}
-                  className="property-images__image"
-                />
-              ))}
+              <div className="property-images__grid">
+                {post.images?.map((image, index) => (
+                  <div key={index} className="property-images__image">
+                    <img 
+                      src={image} 
+                      alt={`Property ${index + 1}`}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="property-details">
@@ -77,9 +79,9 @@ const SavedPostPreviewModal = ({ savedPost, onClose }) => {
             </h3>
             <div className="user-info">
               <img 
-                src={user.avatar || '/placeholder.png'} 
+                src={user.avatar || '/noavatar.jpg'} 
                 alt={user.username}
-                className="user-info__avatar"
+                className="saved-post-user-avatar"
               />
               <div className="user-info__details">
                 <div className="user-info__name">{user.username}</div>
