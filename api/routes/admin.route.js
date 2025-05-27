@@ -40,7 +40,8 @@ import {
     getAllMessages,
     deleteMessage,
     getAllSavedPosts,
-    deleteSavedPost
+    deleteSavedPost,
+    getAnalytics
 } from '../controllers/test.controller.js';
 
 const router = express.Router();
@@ -71,5 +72,8 @@ router.delete('/messages/:id',shouldBeAdmin,verifyToken, deleteMessage);
 // Saved Posts Routes
 router.get('/saved-posts',shouldBeAdmin,verifyToken, getAllSavedPosts);
 router.delete('/saved-posts/:id',shouldBeAdmin,verifyToken, deleteSavedPost);
+
+// Analytics Routes
+router.get('/analytics', shouldBeAdmin, verifyToken, getAnalytics);
 
 export default router;
