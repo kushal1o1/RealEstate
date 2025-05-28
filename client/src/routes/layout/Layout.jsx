@@ -22,6 +22,7 @@ function RequireAuth() {
    
   
   return (
+    
     !currentUser ? <Navigate to='/login'/> : (
     <div className="layout">
       <div className="navbar">
@@ -35,4 +36,11 @@ function RequireAuth() {
   );
 }
 
-export  {Layout,RequireAuth};
+function RequireAdmin() {
+  const {currentUser} = useContext(AuthContext);
+  return (
+    currentUser?.isAdmin ? <Outlet/> : <Navigate to='/'/>
+  )
+}
+
+export  {Layout,RequireAuth,RequireAdmin};
