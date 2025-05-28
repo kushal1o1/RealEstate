@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react';
+import { useNavigate,Link } from 'react-router-dom';
 import { 
   Users, 
   Home, 
@@ -33,6 +34,10 @@ import SavedPosts from './components/SavedPosts/SavedPosts';
 import Messages from './components/Messages/Messages';
 import Analytics from './components/Analytics/Analytics';
 import SettingsComponent from './components/Settings/Settings';
+import CreateUserModal from './components/CreateUserModal/CreateUserModal';
+import CreatePropertyModal from './components/CreatePropertyModal/CreatePropertyModal';
+import { convertToCSV, downloadCSV, formatDateForExport, formatNumberForExport, formatArrayForExport } from '../../utils/exportUtils';
+import { AuthContext } from '../../context/AuthContext';
 // // Mock your apiRequest import
 // const apiRequest = {
 //   get: async (url) => {
@@ -151,9 +156,7 @@ const DashboardHeader = React.memo(({ activeTab, searchTerm, setSearchTerm, onMe
       )}
       
       <div className="header-actions">
-        <button className="btn" title="Notifications">
-          <Bell size={18} />
-        </button>
+       
         <button className="btn" title="Settings" onClick={onSettingsClick}>
           <Settings size={18} />
         </button>
@@ -209,7 +212,7 @@ const Sidebar = React.memo(({ activeTab, setActiveTab, isOpen, onClose }) => {
           <div className="sidebar__logo">
             <Home size={24} />
           </div>
-          <h2 className="sidebar__title">RealEstate</h2>
+          <Link className="sidebar__title" to='/'>RealEstate</Link>
         </div>
         
         <nav className="sidebar__nav">
@@ -306,6 +309,9 @@ const Pagination = React.memo(({ pagination, onPageChange }) => (
 
 // Main Dashboard Component
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const {currentUser} = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -317,7 +323,6 @@ const AdminDashboard = () => {
   const [loadingUser, setLoadingUser] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [loadingProperty, setLoadingProperty] = useState(false);
-  
   
   // Dashboard Stats
   const [stats, setStats] = useState({
@@ -361,6 +366,9 @@ const AdminDashboard = () => {
   const [loadingMessage, setLoadingMessage] = useState(false);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
+  const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
 
   // Memoize the fetch functions
   const fetchDashboardStats = useCallback(async () => {
@@ -628,6 +636,16 @@ const AdminDashboard = () => {
     }
   }, [currentPage, fetchMessages, fetchDashboardStats, searchTerm]);
 
+  const handleCreateUserSuccess = useCallback(() => {
+    fetchUsers(currentPage, searchTerm);
+    fetchDashboardStats();
+  }, [currentPage, searchTerm, fetchUsers, fetchDashboardStats]);
+
+  const handleCreatePropertySuccess = useCallback(() => {
+    fetchPosts(currentPage, searchTerm);
+    fetchDashboardStats();
+  }, [currentPage, searchTerm, fetchPosts, fetchDashboardStats]);
+
   // Memoize the Alert component props
   const alertProps = useMemo(() => ({
     showConfirm,
@@ -689,6 +707,90 @@ const AdminDashboard = () => {
     </div>
   ), [stats, loading]);
 
+  const handleExportUsers = useCallback(() => {
+    const userFields = [
+      'username',
+      'email',
+      'createdAt',
+      '_count.posts',
+      '_count.savedPosts',
+      '_count.chats'
+    ];
+
+    const fieldLabels = {
+      username: 'Username',
+      email: 'Email',
+      createdAt: 'Joined Date',
+      '_count.posts': 'Properties',
+      '_count.savedPosts': 'Saved Posts',
+      '_count.chats': 'Active Chats'
+    };
+
+    const formatter = (value, field, item) => {
+      if (field === 'createdAt') return formatDateForExport(value);
+      if (field.startsWith('_count.')) {
+        const count = item._count?.[field.split('.')[1]] || 0;
+        return formatNumberForExport(count);
+      }
+      return value || '';
+    };
+
+    const csvContent = convertToCSV(users, {
+      fields: userFields,
+      fieldLabels,
+      formatter
+    });
+
+    downloadCSV(csvContent, `users_export_${new Date().toISOString().split('T')[0]}.csv`);
+  }, [users]);
+
+  const handleExportProperties = useCallback(() => {
+    const propertyFields = [
+      'title',
+      'type',
+      'property',
+      'price',
+      'city',
+      'address',
+      'bedroom',
+      'bathroom',
+      'createdAt',
+      '_count.savedPosts',
+      'user.username'
+    ];
+
+    const fieldLabels = {
+      title: 'Title',
+      type: 'Type',
+      property: 'Property Type',
+      price: 'Price',
+      city: 'City',
+      address: 'Address',
+      bedroom: 'Bedrooms',
+      bathroom: 'Bathrooms',
+      createdAt: 'Created Date',
+      '_count.savedPosts': 'Saved Count',
+      'user.username': 'Owner'
+    };
+
+    const formatter = (value, field, item) => {
+      if (field === 'createdAt') return formatDateForExport(value);
+      if (field === 'price') return formatNumberForExport(value);
+      if (field === '_count.savedPosts') return formatNumberForExport(item._count?.savedPosts || 0);
+      if (field === 'user.username') return item.user?.username || '';
+      if (field === 'images') return formatArrayForExport(value);
+      return value || '';
+    };
+
+    const csvContent = convertToCSV(posts, {
+      fields: propertyFields,
+      fieldLabels,
+      formatter
+    });
+
+    downloadCSV(csvContent, `properties_export_${new Date().toISOString().split('T')[0]}.csv`);
+  }, [posts]);
+
   const renderUsers = useCallback(() => (
     <div className="content-section">
       <Alert {...alertProps} />
@@ -698,14 +800,26 @@ const AdminDashboard = () => {
           onClose={handleCloseUserPreview}
         />
       )}
+      <CreateUserModal
+        isOpen={isCreateUserModalOpen}
+        onClose={() => setIsCreateUserModalOpen(false)}
+        onSuccess={handleCreateUserSuccess}
+      />
       <div className="content-actions">
-        <button className="btn btn--primary">
+        <button 
+          className="btn btn--primary"
+          onClick={() => setIsCreateUserModalOpen(true)}
+        >
           <Plus size={16} />
           Add User
         </button>
-        <button className="btn">
+        <button 
+          className="btn"
+          onClick={handleExportUsers}
+          disabled={loading || users.length === 0}
+        >
           <Download size={16} />
-          Export
+          Export Users
         </button>
       </div>
       
@@ -757,7 +871,7 @@ const AdminDashboard = () => {
       
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </div>
-  ), [alertProps, users, loading, pagination, handlePageChange, handleDelete, selectedUser, loadingUser, handleViewUser, handleCloseUserPreview]);
+  ), [alertProps, users, loading, pagination, handlePageChange, handleDelete, selectedUser, loadingUser, handleViewUser, handleCloseUserPreview, isCreateUserModalOpen, handleCreateUserSuccess, handleExportUsers]);
 
   const renderPosts = useCallback(() => (
     <div className="content-section">
@@ -768,6 +882,11 @@ const AdminDashboard = () => {
           onClose={handleClosePropertyPreview}
         />
       )}
+      <CreatePropertyModal
+        isOpen={isCreatePropertyModalOpen}
+        onClose={() => setIsCreatePropertyModalOpen(false)}
+        onSuccess={handleCreatePropertySuccess}
+      />
       <div className="content-filters">
         <select 
           value={filters.type} 
@@ -792,13 +911,20 @@ const AdminDashboard = () => {
       </div>
       
       <div className="content-actions">
-        <button className="btn btn--primary">
+        <button 
+          className="btn btn--primary"
+          onClick={() => setIsCreatePropertyModalOpen(true)}
+        >
           <Plus size={16} />
           Add Property
         </button>
-        <button className="btn">
+        <button 
+          className="btn"
+          onClick={handleExportProperties}
+          disabled={loading || posts.length === 0}
+        >
           <Download size={16} />
-          Export
+          Export Properties
         </button>
       </div>
       
@@ -866,7 +992,7 @@ const AdminDashboard = () => {
       
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </div>
-  ), [alertProps, posts, loading, pagination, filters, handlePageChange, handleDelete, selectedProperty, loadingProperty, handleViewProperty, handleClosePropertyPreview]);
+  ), [alertProps, posts, loading, pagination, filters, handlePageChange, handleDelete, selectedProperty, loadingProperty, handleViewProperty, handleClosePropertyPreview, isCreatePropertyModalOpen, handleCreatePropertySuccess, handleExportProperties]);
 
   const renderChats = useCallback(() => (
     <Chats
@@ -928,6 +1054,16 @@ const AdminDashboard = () => {
 
   // Optimize useEffect dependencies
   useEffect(() => {
+    if (!currentUser) {
+      navigate('/login');
+    } else if (!currentUser.isAdmin) {
+      navigate('/');
+    } else {
+      setIsLoading(false);
+    }
+  }, [currentUser, navigate]);
+
+  useEffect(() => {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
 
@@ -969,6 +1105,10 @@ const AdminDashboard = () => {
   const handleSettingsClose = useCallback(() => {
     setIsSettingsOpen(false);
   }, []);
+
+  if (isLoading) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <div className="admin-dashboard">

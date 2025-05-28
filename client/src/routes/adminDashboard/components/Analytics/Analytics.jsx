@@ -82,17 +82,33 @@ const Analytics = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'var(--color-text)'
+        }
       },
       title: {
         display: true,
         text: 'User Growth',
+        color: 'var(--color-text)'
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          precision: 0
+          precision: 0,
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
+        }
+      },
+      x: {
+        ticks: {
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
         }
       }
     }
@@ -103,17 +119,33 @@ const Analytics = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'var(--color-text)'
+        }
       },
       title: {
         display: true,
         text: 'Property Listings',
+        color: 'var(--color-text)'
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          precision: 0
+          precision: 0,
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
+        }
+      },
+      x: {
+        ticks: {
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
         }
       }
     }
@@ -124,17 +156,33 @@ const Analytics = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'var(--color-text)'
+        }
       },
       title: {
         display: true,
         text: 'Message Trends',
+        color: 'var(--color-text)'
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          precision: 0
+          precision: 0,
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
+        }
+      },
+      x: {
+        ticks: {
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
         }
       }
     }
@@ -145,17 +193,33 @@ const Analytics = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'var(--color-text)'
+        }
       },
       title: {
         display: true,
         text: 'Revenue Overview',
+        color: 'var(--color-text)'
       },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `$${value.toLocaleString()}`
+          callback: (value) => `$${value.toLocaleString()}`,
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
+        }
+      },
+      x: {
+        ticks: {
+          color: 'var(--color-text-muted)'
+        },
+        grid: {
+          color: 'var(--color-border)'
         }
       }
     }
@@ -166,10 +230,14 @@ const Analytics = () => {
     plugins: {
       legend: {
         position: 'right',
+        labels: {
+          color: 'var(--color-text)'
+        }
       },
       title: {
         display: true,
         text: 'Property Types Distribution',
+        color: 'var(--color-text)'
       },
     },
   };
