@@ -12,44 +12,45 @@
 }
 
 .chat-preview-modal {
-  background: white;
+  background: var(--color-bg);
   border-radius: 8px;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
 
   &__header {
     padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
-    background: white;
+    background: var(--color-bg);
     z-index: 1;
   }
 
   &__title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--color-text);
   }
 
   &__close {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--color-text-muted);
     padding: 0.5rem;
     border-radius: 4px;
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: #f3f4f6;
-      color: #1f2937;
+      background-color: var(--color-bg-alt);
+      color: var(--color-text);
     }
   }
 
@@ -60,7 +61,7 @@
   &__subtitle {
     font-size: 1rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--color-text);
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -81,8 +82,9 @@
     align-items: center;
     gap: 1rem;
     padding: 0.75rem;
-    background: #f9fafb;
+    background: var(--color-bg-alt);
     border-radius: 6px;
+    border: 1px solid var(--color-border);
 
     &__avatar {
       width: 32px;
@@ -98,12 +100,12 @@
 
     &__name {
       font-weight: 500;
-      color: #1f2937;
+      color: var(--color-text);
     }
 
     &__email {
       font-size: 0.875rem;
-      color: #6b7280;
+      color: var(--color-text-muted);
     }
   }
 
@@ -116,8 +118,9 @@
 
   .message-item {
     padding: 1rem;
-    background: #f9fafb;
+    background: var(--color-bg-alt);
     border-radius: 6px;
+    border: 1px solid var(--color-border);
 
     &__header {
       display: flex;
@@ -128,19 +131,19 @@
 
     &__sender {
       font-weight: 500;
-      color: #1f2937;
+      color: var(--color-text);
     }
 
     &__time {
       font-size: 0.875rem;
-      color: #6b7280;
+      color: var(--color-text-muted);
       display: flex;
       align-items: center;
       gap: 0.25rem;
     }
 
     &__content {
-      color: #374151;
+      color: var(--color-text-secondary);
       line-height: 1.5;
     }
   }

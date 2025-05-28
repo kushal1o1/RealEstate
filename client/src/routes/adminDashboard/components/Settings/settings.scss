@@ -120,25 +120,3 @@
     color: white;
   }
 }
-
-// Dark mode variables
-[data-theme="dark"] {
-  --color-bg: #1a1a1a;
-  --color-bg-alt: #2d2d2d;
-  --color-text: #ffffff;
-  --color-text-muted: #a0a0a0;
-  --color-text-secondary: #d1d1d1;
-  --color-border: #404040;
-  --color-primary: #3b82f6;
-}
-
-// Light mode variables (default)
-:root {
-  --color-bg: #ffffff;
-  --color-bg-alt: #f3f4f6;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-text-secondary: #374151;
-  --color-border: #e5e7eb;
-  --color-primary: #3b82f6;
-} 
