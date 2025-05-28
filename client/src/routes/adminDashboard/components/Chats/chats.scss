@@ -15,19 +15,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0.5rem;
-  background: #f3f4f6;
+  background: var(--color-bg-alt);
   border-radius: 4px;
   font-size: 0.875rem;
+  border: 1px solid var(--color-border);
 
   &__avatar {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     object-fit: cover;
+    border: 1px solid var(--color-border);
   }
 
   &__name {
-    color: #374151;
+    color: var(--color-text-secondary);
     font-weight: 500;
   }
 }
@@ -36,7 +38,7 @@
   max-width: 300px;
 
   &__text {
-    color: #374151;
+    color: var(--color-text-secondary);
     font-size: 0.875rem;
     margin-bottom: 0.25rem;
     white-space: nowrap;
@@ -48,13 +50,13 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    color: #6b7280;
+    color: var(--color-text-muted);
     font-size: 0.75rem;
   }
 }
 
 .no-messages {
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   font-style: italic;
 }
@@ -64,10 +66,11 @@
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
-  background: #f3f4f6;
+  background: var(--color-bg-alt);
   border-radius: 4px;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
 }
 
 .content-actions {
@@ -84,12 +87,12 @@
   background: none;
   border-radius: 4px;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-muted);
   transition: all 0.2s;
 
   &:hover {
-    background: #f3f4f6;
-    color: #1f2937;
+    background: var(--color-bg-alt);
+    color: var(--color-text);
   }
 
   &:disabled {
@@ -100,7 +103,7 @@
 
 .skeleton-text {
   height: 1rem;
-  background: #e5e7eb;
+  background: var(--color-border);
   border-radius: 4px;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
@@ -124,20 +127,26 @@
   justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
 
   &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
-    background: white;
-    color: #374151;
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover:not(:disabled) {
-      background: #f9fafb;
-      border-color: #d1d5db;
+      background: var(--color-bg-alt);
+      border-color: var(--color-text-secondary);
     }
 
     &:disabled {
@@ -149,8 +158,17 @@
   &__info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--color-text-muted);
+  }
+
+  &__current {
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  &__total {
+    color: var(--color-text-muted);
   }
 } 
