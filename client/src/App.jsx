@@ -5,12 +5,11 @@ import SinglePage from './routes/singlePage/SinglePage'
 import ProfilePage from './routes/profilePage/ProfilePage'
 import Login from './routes/login/Login'
 import Register from './routes/register/Register'
-import { Layout,RequireAuth } from './routes/layout/Layout'
+import { Layout,RequireAuth,RequireAdmin } from './routes/layout/Layout'
 import ProfileUpdatePage from './routes/profileUpdatePage/ProfileUpdatePage'
 import NewPostPage from './routes/newPostPage/NewPostPage'
 import { singlePageLoader,listPageLoader,profilePageLoader } from './lib/loaders.js'
 import Contact from './routes/contactPage/Contact'
-import Agent from './routes/agentPage/Agent'
 import About from './routes/aboutPage/About'
 import UpdatePostPage from './routes/updatePostPage/UpdatePostPage'
 import AdminDashboard from './routes/adminDashboard/adminDashboard.jsx'
@@ -42,10 +41,6 @@ function App() {
         {
           path:"/contact",
           element:<Contact/>
-        },
-        {
-          path:"/agent",
-          element:<Agent/>
         },
         {
           path:"/about",
@@ -85,9 +80,16 @@ function App() {
 
     },
     {
+      path:'/',
+      element:<RequireAdmin/>,
+      children:[
+        {
       path: '/admin-dashboard',
       element: <AdminDashboard />,
     },
+    
+      ]
+    }
   ])
 
   return (
