@@ -24,7 +24,9 @@ function Navbar() {
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/contact">Contact</a>
-        <a href="/agent">Agents</a>
+        {currentUser?.isAdmin && (
+          <a href="/admin-dashboard">Admin Dashboard</a>
+        )}
       </div>
       <div className="right">
         {currentUser ? (
