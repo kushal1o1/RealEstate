@@ -89,11 +89,11 @@ function Chat({chats}) {
         onClick={() => handleOpenChat(c.id, c.receiver)}
       >
         <img
-          src={c.receiver.avatar || './noavatar.jpg'}
+          src={c.receiver?.avatar || './noavatar.jpg'}
           alt=""
         />
         <div className="message-content">
-          <span>{c.receiver.username}</span>
+          <span>{c.receiver?.username}</span>
           <p>{c.lastMessage}</p>
         </div>
       </div>
@@ -105,10 +105,10 @@ function Chat({chats}) {
       <div className="top">
         <div className="user">
           <img
-            src={chat.receiver.avatar || './noavatar.jpg'}
+            src={chat.receiver?.avatar || './noavatar.jpg'}
             alt=""
           />
-          <span>{chat.receiver.username}</span>
+          <span>{chat.receiver?.username}</span>
         </div>
         <span className="close" onClick={() => setChat(null)}>×</span>
       </div>
