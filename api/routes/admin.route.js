@@ -62,7 +62,7 @@ router.delete('/users/:id', deleteUser);
 // Posts Routes
 router.get('/posts', getAllPosts);
 router.get('/posts/:id', getPostById);
-router.put('/posts/:id', updatePost);
+// router.put('/posts/:id', updatePost);
 router.delete('/posts/:id', deletePost);
 
 // Chats Routes

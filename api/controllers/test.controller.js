@@ -815,4 +815,5 @@ export const getAnalytics = async (req, res) => {
         console.error('Error fetching analytics data:', err);
         res.status(500).json({ message: "Failed to fetch analytics data" });
     }
-}; 
+};
+
