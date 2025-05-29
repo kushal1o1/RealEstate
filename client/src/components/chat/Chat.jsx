@@ -92,7 +92,7 @@ function Chat({chats}) {
           src={c.receiver?.avatar || './noavatar.jpg'}
           alt=""
         />
-        <div className="message-content">
+        <div className="">
           <span>{c.receiver?.username}</span>
           <p>{c.lastMessage}</p>
         </div>
