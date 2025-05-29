@@ -35,7 +35,7 @@ import Messages from './components/Messages/Messages';
 import Analytics from './components/Analytics/Analytics';
 import SettingsComponent from './components/Settings/Settings';
 import CreateUserModal from './components/CreateUserModal/CreateUserModal';
-import CreatePropertyModal from './components/CreatePropertyModal/CreatePropertyModal';
+// import CreatePropertyModal from './components/CreatePropertyModal/CreatePropertyModal';
 import { convertToCSV, downloadCSV, formatDateForExport, formatNumberForExport, formatArrayForExport } from '../../utils/exportUtils';
 import { AuthContext } from '../../context/AuthContext';
 // // Mock your apiRequest import
@@ -368,7 +368,7 @@ const AdminDashboard = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
-  const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
+  // const [isCreatePropertyModalOpen, setIsCreatePropertyModalOpen] = useState(false);
 
   // Memoize the fetch functions
   const fetchDashboardStats = useCallback(async () => {
@@ -882,11 +882,6 @@ const AdminDashboard = () => {
           onClose={handleClosePropertyPreview}
         />
       )}
-      <CreatePropertyModal
-        isOpen={isCreatePropertyModalOpen}
-        onClose={() => setIsCreatePropertyModalOpen(false)}
-        onSuccess={handleCreatePropertySuccess}
-      />
       <div className="content-filters">
         <select 
           value={filters.type} 
@@ -907,17 +902,11 @@ const AdminDashboard = () => {
           <option value="apartment">Apartment</option>
           <option value="house">House</option>
           <option value="condo">Condo</option>
+          <option value="land">Land</option>
         </select>
       </div>
       
       <div className="content-actions">
-        <button 
-          className="btn btn--primary"
-          onClick={() => setIsCreatePropertyModalOpen(true)}
-        >
-          <Plus size={16} />
-          Add Property
-        </button>
         <button 
           className="btn"
           onClick={handleExportProperties}
@@ -974,9 +963,6 @@ const AdminDashboard = () => {
                 >
                   <Eye size={14} />
                 </button>
-                <button className="btn" title="Edit">
-                  <Edit size={14} />
-                </button>
                 <button 
                   className="btn" 
                   onClick={() => handleDelete(post.id, 'posts')}
@@ -992,7 +978,7 @@ const AdminDashboard = () => {
       
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </div>
-  ), [alertProps, posts, loading, pagination, filters, handlePageChange, handleDelete, selectedProperty, loadingProperty, handleViewProperty, handleClosePropertyPreview, isCreatePropertyModalOpen, handleCreatePropertySuccess, handleExportProperties]);
+  ), [alertProps, posts, loading, pagination, filters, handlePageChange, handleDelete, selectedProperty, handleClosePropertyPreview, handleExportProperties]);
 
   const renderChats = useCallback(() => (
     <Chats
