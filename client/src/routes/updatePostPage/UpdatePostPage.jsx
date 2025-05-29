@@ -114,6 +114,13 @@ function UpdatePostPage() {
           pet: inputs.pet,
           income: inputs.income,
           size: parseInt(inputs.size),
+          builduparea: parseInt(inputs.builduparea),
+          roadacess: inputs.roadacess,
+          Facing: parseFloat(inputs.facing),
+          floor: parseInt(inputs.floor),
+          builtyear: parseInt(inputs.builtyear),
+          parking: inputs.parking,
+          amenities: inputs.amenities,
           school: parseInt(inputs.school),
           bus: parseInt(inputs.bus),
           restaurant: parseInt(inputs.restaurant),
@@ -225,6 +232,90 @@ function UpdatePostPage() {
             <div className="form-group">
               <label htmlFor="size">Total Size (sqft)</label>
               <input min={0} id="size" name="size" type="number" defaultValue={post?.postDetail?.size} required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="builduparea">Build Up Area (sqft)</label>
+              <input min={0} id="builduparea" name="builduparea" type="number" defaultValue={post?.postDetail?.builduparea} required />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="roadacess">Road Access</label>
+              <select 
+                name="roadacess" 
+                defaultValue={post?.postDetail?.roadacess || "WEST"}
+                onChange={(e) => setPost({ 
+                  ...post, 
+                  postDetail: { ...post?.postDetail, roadacess: e.target.value } 
+                })}
+                required
+              >
+                <option value="WEST">West</option>
+                <option value="SOUTH">South</option>
+                <option value="EAST">East</option>
+                <option value="NORTH">North</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="facing">Facing (ft)</label>
+              <input
+                id="facing"
+                name="facing"
+                type="number"
+                min={0}
+                defaultValue={post?.postDetail?.Facing}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="floor">Floor</label>
+              <input 
+                min={1} 
+                id="floor" 
+                name="floor" 
+                type="number" 
+                defaultValue={post?.postDetail?.floor} 
+                required 
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="builtyear">Built Year</label>
+              <input 
+                min={1900} 
+                max={new Date().getFullYear()} 
+                id="builtyear" 
+                name="builtyear" 
+                type="number" 
+                defaultValue={post?.postDetail?.builtyear} 
+                required 
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="parking">Parking</label>
+              <input 
+                id="parking" 
+                name="parking" 
+                type="text" 
+                placeholder="e.g., 2 car, bike" 
+                defaultValue={post?.postDetail?.parking}
+                required 
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label htmlFor="amenities">Amenities (comma separated)</label>
+              <input 
+                id="amenities" 
+                name="amenities" 
+                type="text" 
+                placeholder="e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace" 
+                defaultValue={post?.postDetail?.amenities}
+                required 
+              />
             </div>
             
             <div className="form-group">

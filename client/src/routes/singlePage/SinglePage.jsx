@@ -92,8 +92,10 @@ function SinglePage() {
                 {
                 post.postDetail.utilities =="owner" ? (
                     <p>Owner is responsible</p>
-                  ) : (
+                  ) : post.postDetail.utilities === "tenant" ? (
                     <p>Tenant is responsible</p>
+                  ) : (
+                    <p>Shared responsibility</p>
                   )
                 }
               </div>
@@ -115,13 +117,74 @@ function SinglePage() {
               <img src="/fee.png" alt="" />
               <div className="featureText">
                 <span>Income Fees</span>
-                <p>{
-                   post.postDetail.income
-                  }
-                  </p>
+                <p>{post.postDetail.income}</p>
               </div>
             </div>
           </div>
+
+          <p className="title">Property Details</p>
+          <div className="propertyDetails">
+            <div className="detailItem">
+              <img src="/size.png" alt="" />
+              <div className="detailText">
+                <span>Total Size</span>
+                <p>{post.postDetail.size} sqft</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/size.png" alt="" />
+              <div className="detailText">
+                <span>Build Up Area</span>
+                <p>{post.postDetail.builduparea} sqft</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/road.png" alt="" />
+              <div className="detailText">
+                <span>Road Access</span>
+                <p>{post.postDetail.roadacess}</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/facing.png" alt="" />
+              <div className="detailText">
+                <span>Facing</span>
+                <p>{post.postDetail.Facing} ft</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/floor.png" alt="" />
+              <div className="detailText">
+                <span>Floor</span>
+                <p>{post.postDetail.floor}</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/year.png" alt="" />
+              <div className="detailText">
+                <span>Built Year</span>
+                <p>{post.postDetail.builtyear}</p>
+              </div>
+            </div>
+            <div className="detailItem">
+              <img src="/parking.png" alt="" />
+              <div className="detailText">
+                <span>Parking</span>
+                <p>{post.postDetail.parking}</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="title">Amenities</p>
+          <div className="amenities">
+            {post.postDetail.amenities?.split(',').map((amenity, index) => (
+              <div key={index} className="amenity">
+                <img src="/check.png" alt="" />
+                <span>{amenity.trim()}</span>
+              </div>
+            ))}
+          </div>
+
           <p className="title">Sizes</p>
           <div className="sizes">
             <div className="size">
@@ -130,11 +193,11 @@ function SinglePage() {
             </div>
             <div className="size">
               <img src="/bed.png" alt="" />
-              <span>{post.beds} beds</span>
+              <span>{post.bedroom} beds</span>
             </div>
             <div className="size">
               <img src="/bath.png" alt="" />
-              <span>{post.bedroom} bathroom</span>
+              <span>{post.bathroom} bathroom</span>
             </div>
           </div>
           <p className="title">Nearby Places</p>

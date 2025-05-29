@@ -121,8 +121,38 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                   )}
                   {property.postDetail.area && (
                     <div className="detail-item">
-                      <span className="detail-item__label">Area</span>
+                      <span className="detail-item__label">Total Size</span>
                       <span className="detail-item__value">{property.postDetail.area} sq ft</span>
+                    </div>
+                  )}
+                  {property.postDetail.builduparea && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Build Up Area</span>
+                      <span className="detail-item__value">{property.postDetail.builduparea} sq ft</span>
+                    </div>
+                  )}
+                  {property.postDetail.roadacess && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Road Access</span>
+                      <span className="detail-item__value">{property.postDetail.roadacess}</span>
+                    </div>
+                  )}
+                  {property.postDetail.Facing && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Facing</span>
+                      <span className="detail-item__value">{property.postDetail.Facing} ft</span>
+                    </div>
+                  )}
+                  {property.postDetail.floor && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Floor</span>
+                      <span className="detail-item__value">{property.postDetail.floor}</span>
+                    </div>
+                  )}
+                  {property.postDetail.builtyear && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Built Year</span>
+                      <span className="detail-item__value">{property.postDetail.builtyear}</span>
                     </div>
                   )}
                   {property.postDetail.parking && (
@@ -131,6 +161,44 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                       <span className="detail-item__value">{property.postDetail.parking}</span>
                     </div>
                   )}
+                  {property.postDetail.utilities && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Utilities Policy</span>
+                      <span className="detail-item__value">
+                        {property.postDetail.utilities === 'owner' ? 'Owner is responsible' :
+                         property.postDetail.utilities === 'tenant' ? 'Tenant is responsible' :
+                         'Shared'}
+                      </span>
+                    </div>
+                  )}
+                  {property.postDetail.pet && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Pet Policy</span>
+                      <span className="detail-item__value">
+                        {property.postDetail.pet === 'allowed' ? 'Allowed' : 'Not Allowed'}
+                      </span>
+                    </div>
+                  )}
+                  {property.postDetail.income && (
+                    <div className="detail-item">
+                      <span className="detail-item__label">Income Policy</span>
+                      <span className="detail-item__value">{property.postDetail.income}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {property.postDetail?.amenities && (
+              <div className="property-details">
+                <h4>Amenities</h4>
+                <div className="property-details__grid">
+                  {property.postDetail.amenities.split(',').map((amenity, index) => (
+                    <div key={index} className="detail-item">
+                      <span className="detail-item__label">Amenity</span>
+                      <span className="detail-item__value">{amenity.trim()}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

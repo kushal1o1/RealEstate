@@ -55,9 +55,10 @@ useEffect(() => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
-    // console.log(inputs);
+    
+    // Remove amenities array processing
     try {
-      const res =await apiRequest.post("/posts", {
+      const res = await apiRequest.post("/posts", {
        postData:{
           title: inputs.title,
           price: parseInt(inputs.price),
@@ -70,18 +71,23 @@ useEffect(() => {
           latitude: inputs.latitude,
           longitude: inputs.longitude,
           images: images,
-
        },
        postDetail:{
-           desc: value,
+          desc: value,
           utilities: inputs.utilities,
           pet: inputs.pet,
           income: inputs.income,
           size: parseInt(inputs.size),
+          builduparea: parseInt(inputs.builduparea),
+          roadacess: inputs.roadacess,
+          Facing: parseFloat(inputs.facing),
+          floor: parseInt(inputs.floor),
+          builtyear: parseInt(inputs.builtyear),
+          parking: inputs.parking,
+          amenities: inputs.amenities, // Send as string directly
           school: parseInt(inputs.school),
           bus: parseInt(inputs.bus),
           restaurant: parseInt(inputs.restaurant),
-
        }
       });
       showToast("Post Created Successfully", 'success');
@@ -204,15 +210,71 @@ useEffect(() => {
           <div className={`tab-content ${activeTab === 'details' ? 'active' : ''}`}>
             <div className="form-group">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number"  required />
+              <input min={0} id="size" name="size" type="number" required />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="builduparea">Build Up Area (sqft)</label>
+              <input min={0} id="builduparea" name="builduparea" type="number" required />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="roadacess">Road Access</label>
+              <select name="roadacess" required>
+                <option value="WEST">West</option>
+                <option value="SOUTH">South</option>
+                <option value="EAST">East</option>
+                <option value="NORTH">North</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="facing">Facing (ft)</label>
+              <input
+                min={0}
+                id="facing"
+                name="facing"
+                type="number"
+                placeholder="e.g., 2.3"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="floor">Floor</label>
+              <input min={1} id="floor" name="floor" type="number" required />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="builtyear">Built Year</label>
+              <input min={1900} max={new Date().getFullYear()} id="builtyear" name="builtyear" type="number" required />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="parking">Parking</label>
+              <input 
+                id="parking" 
+                name="parking" 
+                type="text" 
+                placeholder="e.g., 2 car, bike" 
+                required 
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label htmlFor="amenities">Amenities (comma separated)</label>
+              <input 
+                id="amenities" 
+                name="amenities" 
+                type="text" 
+                placeholder="e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace" 
+                required 
+              />
             </div>
             
             <div className="form-group">
               <label htmlFor="utilities">Utilities Policy</label>
-              <select 
-                name="utilities" 
-              
-              >
+              <select name="utilities" required>
                 <option value="owner">Owner is responsible</option>
                 <option value="tenant">Tenant is responsible</option>
                 <option value="shared">Shared</option>
@@ -221,10 +283,7 @@ useEffect(() => {
             
             <div className="form-group">
               <label htmlFor="pet">Pet Policy</label>
-              <select 
-                name="pet" 
-       
-              >
+              <select name="pet" required>
                 <option value="allowed">Allowed</option>
                 <option value="not-allowed">Not Allowed</option>
               </select>
@@ -237,7 +296,6 @@ useEffect(() => {
                 name="income"
                 type="text"
                 placeholder="Income Policy"
-              
                 required
               />
             </div>
