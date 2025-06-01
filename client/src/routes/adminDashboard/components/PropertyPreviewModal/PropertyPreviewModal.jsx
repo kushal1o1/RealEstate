@@ -32,97 +32,108 @@ const PropertyPreviewModal = ({ property, onClose }) => {
       <div className="property-preview-modal" onClick={e => e.stopPropagation()}>
         <div className="property-preview-modal__header">
           <h2>Property Details</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="property-preview-modal__close" onClick={onClose}>
             <X size={20} />
           </button>
         </div>
 
         <div className="property-preview-modal__content">
-          {/* Image Gallery */}
-          <div className="property-gallery">
-            {property.images && property.images.length > 0 ? (
-              <>
-                <img 
-                  src={property.images[currentImageIndex]} 
-                  alt={property.title}
-                  className="property-gallery__main-image"
-                />
-                {property.images.length > 1 && (
-                  <>
-                    <button 
-                      className="gallery-nav gallery-nav--prev"
-                      onClick={handlePrevImage}
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button 
-                      className="gallery-nav gallery-nav--next"
-                      onClick={handleNextImage}
-                    >
-                      <ChevronRight size={24} />
-                    </button>
+          {/* Left Column - Gallery and Basic Info */}
+          <div className="property-preview-modal__left">
+            {/* Image Gallery */}
+            <div className="property-gallery">
+              {property.images && property.images.length > 0 ? (
+                <>
+                  <div className="property-gallery__main">
+                    <img 
+                      src={property.images[currentImageIndex]} 
+                      alt={property.title}
+                      className="property-gallery__main-image"
+                    />
+                    {property.images.length > 1 && (
+                      <>
+                        <button 
+                          className="gallery-nav gallery-nav--prev"
+                          onClick={handlePrevImage}
+                          aria-label="Previous image"
+                        >
+                          <ChevronLeft size={24} />
+                        </button>
+                        <button 
+                          className="gallery-nav gallery-nav--next"
+                          onClick={handleNextImage}
+                          aria-label="Next image"
+                        >
+                          <ChevronRight size={24} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  {property.images.length > 1 && (
                     <div className="gallery-thumbnails">
                       {property.images.map((image, index) => (
                         <button
                           key={index}
                           className={`gallery-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
                           onClick={() => setCurrentImageIndex(index)}
+                          aria-label={`View image ${index + 1}`}
                         >
                           <img src={image} alt={`${property.title} - ${index + 1}`} />
                         </button>
                       ))}
                     </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="property-gallery__placeholder">
-                <Home size={48} />
-                <span>No images available</span>
+                  )}
+                </>
+              ) : (
+                <div className="property-gallery__placeholder">
+                  <Home size={48} />
+                  <span>No images available</span>
+                </div>
+              )}
+            </div>
+
+            {/* Basic Info */}
+            <div className="property-info">
+              <div className="property-info__header">
+                <h3 className="property-info__title">{property.title}</h3>
+                <div className="property-info__meta">
+                  <span className="badge badge--type">{property.type}</span>
+                  <span className="badge badge--property">{property.property}</span>
+                </div>
+                <div className="property-info__price">
+                  <DollarSign size={20} />
+                  <span>${property.price?.toLocaleString()}</span>
+                </div>
+                <div className="property-info__location">
+                  <MapPin size={16} />
+                  <span>{property.city}, {property.address}</span>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Property Info */}
-          <div className="property-info">
-            <div className="property-info__header">
-              <h3 className="property-info__title">{property.title}</h3>
-              <div className="property-info__meta">
-                <span className="badge badge--type">{property.type}</span>
-                <span className="badge badge--property">{property.property}</span>
-              </div>
-            </div>
-
-            <div className="property-info__price">
-              <DollarSign size={20} />
-              <span>{property.price?.toLocaleString()}</span>
-            </div>
-
-            <div className="property-info__location">
-              <MapPin size={16} />
-              <span>{property.city}, {property.address}</span>
-            </div>
-
+          {/* Right Column - Details */}
+          <div className="property-preview-modal__right">
             {property.postDetail && (
               <div className="property-details">
                 <h4>Property Details</h4>
                 <div className="property-details__grid">
-                  {property.postDetail.bedrooms && (
+                  {property.bedroom && (
                     <div className="detail-item">
                       <span className="detail-item__label">Bedrooms</span>
-                      <span className="detail-item__value">{property.postDetail.bedrooms}</span>
+                      <span className="detail-item__value">{property.bedroom}</span>
                     </div>
                   )}
-                  {property.postDetail.bathrooms && (
+                  {property.bathroom && (
                     <div className="detail-item">
                       <span className="detail-item__label">Bathrooms</span>
-                      <span className="detail-item__value">{property.postDetail.bathrooms}</span>
+                      <span className="detail-item__value">{property.bathroom}</span>
                     </div>
                   )}
-                  {property.postDetail.area && (
+                  {property.postDetail.size && (
                     <div className="detail-item">
                       <span className="detail-item__label">Total Size</span>
-                      <span className="detail-item__value">{property.postDetail.area} sq ft</span>
+                      <span className="detail-item__value">{property.postDetail.size} sq ft</span>
                     </div>
                   )}
                   {property.postDetail.builduparea && (
@@ -161,30 +172,6 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                       <span className="detail-item__value">{property.postDetail.parking}</span>
                     </div>
                   )}
-                  {property.postDetail.utilities && (
-                    <div className="detail-item">
-                      <span className="detail-item__label">Utilities Policy</span>
-                      <span className="detail-item__value">
-                        {property.postDetail.utilities === 'owner' ? 'Owner is responsible' :
-                         property.postDetail.utilities === 'tenant' ? 'Tenant is responsible' :
-                         'Shared'}
-                      </span>
-                    </div>
-                  )}
-                  {property.postDetail.pet && (
-                    <div className="detail-item">
-                      <span className="detail-item__label">Pet Policy</span>
-                      <span className="detail-item__value">
-                        {property.postDetail.pet === 'allowed' ? 'Allowed' : 'Not Allowed'}
-                      </span>
-                    </div>
-                  )}
-                  {property.postDetail.income && (
-                    <div className="detail-item">
-                      <span className="detail-item__label">Income Policy</span>
-                      <span className="detail-item__value">{property.postDetail.income}</span>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
@@ -195,7 +182,6 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                 <div className="property-details__grid">
                   {property.postDetail.amenities.split(',').map((amenity, index) => (
                     <div key={index} className="detail-item">
-                      <span className="detail-item__label">Amenity</span>
                       <span className="detail-item__value">{amenity.trim()}</span>
                     </div>
                   ))}
