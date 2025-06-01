@@ -17,6 +17,7 @@ function SinglePage() {
   const {currentUser} = useContext(AuthContext); 
   const navigator = useNavigate();
   const { showToast } = useToast();
+  const [showAdminAlert, setShowAdminAlert] = useState(false);
   // console.log(post);
   const handleSave = async () => {
     // TODO:optimistics hook use ok later
@@ -40,21 +41,27 @@ function SinglePage() {
   const handleMessageClick = async () => {
     if(!currentUser){
       showToast("Please login to send a message", 'error');
-      redirect('/login');
+      navigator('/login');
+      return;
     }
     if(currentUser.id == post.userId){
       showToast("You cannot send a message to yourself", 'error');
-      navigator('/profile');
       return;
     }
-    try{
+    // Show admin alert first
+    setShowAdminAlert(true);
+  }
+  
+  const handleConfirmChat = async () => {
+    try {
       await apiRequest.post('/chats',{receiverId:post.userId});
       showToast("Redirecting to Chat", 'success');
       navigator('/profile');
-
-    }catch(err){
+    } catch(err) {
       showToast("An error occurred while redirecting the message", 'error');
       console.log(err);
+    } finally {
+      setShowAdminAlert(false);
     }
   }
   
@@ -262,6 +269,24 @@ function SinglePage() {
           </div>
         </div>
       </div>
+
+      {showAdminAlert && (
+        <div className="admin-alert">
+          <div className="admin-alert__content">
+            <h3>Privacy Notice</h3>
+            <p>Please note that all messages are visible to administrators for moderation purposes. 
+            By proceeding, you agree to maintain professional and respectful communication.</p>
+            <div className="admin-alert__buttons">
+              <button onClick={handleConfirmChat} className="btn-confirm">
+                I Understand, Continue
+              </button>
+              <button onClick={() => setShowAdminAlert(false)} className="btn-cancel">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

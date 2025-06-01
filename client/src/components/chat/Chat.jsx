@@ -75,6 +75,11 @@ function Chat({chats}) {
   }, [socket, chat]);
   return (
 <div className="chat">
+  <div className="admin-notice">
+    <div className="admin-notice__icon">!</div>
+    <p>All messages are visible to administrators for moderation purposes.</p>
+  </div>
+
   <div className="messages">
     <h1>Messages</h1>
     {Array.isArray(chats) && chats?.map((c) => (
