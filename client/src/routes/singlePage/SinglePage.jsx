@@ -57,6 +57,8 @@ function SinglePage() {
     }
   }
   
+  const isLandProperty = post.property === 'land';
+
   return (
     <div className="singlePage">
       <div className="details">
@@ -83,44 +85,44 @@ function SinglePage() {
       </div>
       <div className="features">
         <div className="wrapper">
-          <p className="title">General</p>
-          <div className="listVertical">
-            <div className="feature">
-              <img src="/utility.png" alt="" />
-              <div className="featureText">
-                <span>Utilities</span>
-                {
-                post.postDetail.utilities =="owner" ? (
-                    <p>Owner is responsible</p>
-                  ) : post.postDetail.utilities === "tenant" ? (
-                    <p>Tenant is responsible</p>
-                  ) : (
-                    <p>Shared responsibility</p>
-                  )
-                }
+          {!isLandProperty && (
+            <>
+              <p className="title">General</p>
+              <div className="listVertical">
+                <div className="feature">
+                  <img src="/utility.png" alt="" />
+                  <div className="featureText">
+                    <span>Utilities</span>
+                    {post.postDetail.utilities === "owner" ? (
+                      <p>Owner is responsible</p>
+                    ) : post.postDetail.utilities === "tenant" ? (
+                      <p>Tenant is responsible</p>
+                    ) : (
+                      <p>Shared responsibility</p>
+                    )}
+                  </div>
+                </div>
+                <div className="feature">
+                  <img src="/pet.png" alt="" />
+                  <div className="featureText">
+                    <span>Pet Policy</span>
+                    {post.postDetail.pet === "allowed" ? (
+                      <p>Pet Allowed</p>
+                    ) : (
+                      <p>Pet not Allowed</p>
+                    )}
+                  </div>
+                </div>
+                <div className="feature">
+                  <img src="/fee.png" alt="" />
+                  <div className="featureText">
+                    <span>Income Fees</span>
+                    <p>{post.postDetail.income}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="feature">
-              <img src="/pet.png" alt="" />
-              <div className="featureText">
-                <span>Pet Policy</span>
-                {
-                post.postDetail.pet == "allowed" ? (
-                    <p>Pet Allowed</p>
-                  ) : (
-                    <p>Pet not Allowed</p>
-                  )
-                }
-              </div>
-            </div>
-            <div className="feature">
-              <img src="/fee.png" alt="" />
-              <div className="featureText">
-                <span>Income Fees</span>
-                <p>{post.postDetail.income}</p>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
 
           <p className="title">Property Details</p>
           <div className="propertyDetails">
@@ -131,13 +133,17 @@ function SinglePage() {
                 <p>{post.postDetail.size} sqft</p>
               </div>
             </div>
-            <div className="detailItem">
-              <img src="/size.png" alt="" />
-              <div className="detailText">
-                <span>Build Up Area</span>
-                <p>{post.postDetail.builduparea} sqft</p>
+            
+            {!isLandProperty && (
+              <div className="detailItem">
+                <img src="/size.png" alt="" />
+                <div className="detailText">
+                  <span>Build Up Area</span>
+                  <p>{post.postDetail.builduparea} sqft</p>
+                </div>
               </div>
-            </div>
+            )}
+
             <div className="detailItem">
               <img src="/road.png" alt="" />
               <div className="detailText">
@@ -145,6 +151,7 @@ function SinglePage() {
                 <p>{post.postDetail.roadacess}</p>
               </div>
             </div>
+
             <div className="detailItem">
               <img src="/facing.png" alt="" />
               <div className="detailText">
@@ -152,30 +159,37 @@ function SinglePage() {
                 <p>{post.postDetail.Facing} ft</p>
               </div>
             </div>
-            <div className="detailItem">
-              <img src="/floor.png" alt="" />
-              <div className="detailText">
-                <span>Floor</span>
-                <p>{post.postDetail.floor}</p>
-              </div>
-            </div>
-            <div className="detailItem">
-              <img src="/year.png" alt="" />
-              <div className="detailText">
-                <span>Built Year</span>
-                <p>{post.postDetail.builtyear}</p>
-              </div>
-            </div>
-            <div className="detailItem">
-              <img src="/parking.png" alt="" />
-              <div className="detailText">
-                <span>Parking</span>
-                <p>{post.postDetail.parking}</p>
-              </div>
-            </div>
+
+            {!isLandProperty && (
+              <>
+                <div className="detailItem">
+                  <img src="/floor.png" alt="" />
+                  <div className="detailText">
+                    <span>Floor</span>
+                    <p>{post.postDetail.floor}</p>
+                  </div>
+                </div>
+
+                <div className="detailItem">
+                  <img src="/year.png" alt="" />
+                  <div className="detailText">
+                    <span>Built Year</span>
+                    <p>{post.postDetail.builtyear}</p>
+                  </div>
+                </div>
+
+                <div className="detailItem">
+                  <img src="/parking.png" alt="" />
+                  <div className="detailText">
+                    <span>Parking</span>
+                    <p>{post.postDetail.parking}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
-          <p className="title">Amenities</p>
+          <p className="title">{isLandProperty ? 'Features' : 'Amenities'}</p>
           <div className="amenities">
             {post.postDetail.amenities?.split(',').map((amenity, index) => (
               <div key={index} className="amenity">
@@ -191,51 +205,58 @@ function SinglePage() {
               <img src="/size.png" alt="" />
               <span>{post.postDetail.size} sqft</span>
             </div>
-            <div className="size">
-              <img src="/bed.png" alt="" />
-              <span>{post.bedroom} beds</span>
-            </div>
-            <div className="size">
-              <img src="/bath.png" alt="" />
-              <span>{post.bathroom} bathroom</span>
-            </div>
+            {!isLandProperty && (
+              <>
+                <div className="size">
+                  <img src="/bed.png" alt="" />
+                  <span>{post.bedroom} beds</span>
+                </div>
+                <div className="size">
+                  <img src="/bath.png" alt="" />
+                  <span>{post.bathroom} bathroom</span>
+                </div>
+              </>
+            )}
           </div>
+
           <p className="title">Nearby Places</p>
           <div className="listHorizontal">
             <div className="feature">
               <img src="/school.png" alt="" />
               <div className="featureText">
                 <span>School</span>
-                <p>{post.postDetail.school > 999 ? post.postDetail.school/1000 + 'km' :post.postDetail.school + 'm'} away</p>
+                <p>{post.postDetail.school > 999 ? post.postDetail.school/1000 + 'km' : post.postDetail.school + 'm'} away</p>
               </div>
             </div>
             <div className="feature">
               <img src="/pet.png" alt="" />
               <div className="featureText">
                 <span>Bus Stop</span>
-                <p>{post.postDetail.bus > 999 ? post.postDetail.bus/1000 + 'km' :post.postDetail.bus + 'm'} away</p>
+                <p>{post.postDetail.bus > 999 ? post.postDetail.bus/1000 + 'km' : post.postDetail.bus + 'm'} away</p>
               </div>
             </div>
             <div className="feature">
               <img src="/fee.png" alt="" />
               <div className="featureText">
                 <span>Restaurant</span>
-                <p>{post.postDetail.restaurant > 999 ? post.postDetail.restaurant/1000 + 'km' :post.postDetail.restaurant + 'm'} away</p>
+                <p>{post.postDetail.restaurant > 999 ? post.postDetail.restaurant/1000 + 'km' : post.postDetail.restaurant + 'm'} away</p>
               </div>
             </div>
           </div>
+
           <p className="title">Location</p>
           <div className="mapContainer">
             <Map data={[post]} />
           </div>
+
           <div className="buttons">
             <button onClick={handleMessageClick}>
               <img src="/chat.png" alt="" />
               Send a Message
             </button>
-            <button onClick={handleSave} style={{backgroundColor:saved ? '#fece51' : 'white'}}>
+            <button onClick={handleSave} style={{backgroundColor: saved ? '#fece51' : 'white'}}>
               <img src="/save.png" alt="" />
-            {saved ? 'Place Saved':' Save the Place'} 
+              {saved ? 'Place Saved' : 'Save the Place'} 
             </button>
           </div>
         </div>

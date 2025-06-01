@@ -1,5 +1,5 @@
 import "./filter.scss";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function Filter({ onSearch }) {
@@ -15,10 +15,21 @@ function Filter({ onSearch }) {
   });
 
   const handleChange = (e) => {
-    setQuery((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    setQuery((prev) => {
+      const newQuery = {
+        ...prev,
+        [name]: value,
+      };
+
+      // Reset bedroom and bathroom when property type is land
+      if (name === 'property' && value === 'land') {
+        newQuery.bedroom = 0;
+        newQuery.bathroom = 0;
+      }
+
+      return newQuery;
+    });
   };
 
   const handleFilter = (e) => {
@@ -34,6 +45,8 @@ function Filter({ onSearch }) {
       handleFilter(e);
     }
   };
+
+  const isLandProperty = query.property === 'land';
 
   return (
     <div className="filter">
@@ -57,7 +70,13 @@ function Filter({ onSearch }) {
       <div className="bottom">
         <div className="item">
           <label htmlFor="type">Type</label>
-          <select name="type" id="type" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.type}>
+          <select 
+            name="type" 
+            id="type" 
+            onChange={handleChange} 
+            onKeyPress={handleKeyPress} 
+            defaultValue={query.type}
+          >
             <option value="">any</option>
             <option value="sale">Buy</option>
             <option value="rent">Rent</option>
@@ -65,34 +84,58 @@ function Filter({ onSearch }) {
         </div>
         <div className="item">
           <label htmlFor="property">Property</label>
-          <select name="property" id="property" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.property}>
+          <select 
+            name="property" 
+            id="property" 
+            onChange={handleChange} 
+            onKeyPress={handleKeyPress} 
+            defaultValue={query.property}
+          >
             <option value="">any</option>
             <option value="apartment">Apartment</option>
             <option value="house">House</option>
             <option value="land">Land</option>
           </select>
         </div>
-        <div className="item">
-          <label htmlFor="bedroom">Bedrooms</label>
-          <select name="bedroom" id="bedroom" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.bedroom}>
-            <option value="">any</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
-        <div className="item">
-          <label htmlFor="bathroom">Bathrooms</label>
-          <select name="bathroom" id="bathroom" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.bathroom}>
-            <option value="">any</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4+</option>
-          </select>
-        </div>
+        {!isLandProperty && (
+          <>
+            <div className="item">
+              <label htmlFor="bedroom">Bedrooms</label>
+              <select 
+                name="bedroom" 
+                id="bedroom" 
+                onChange={handleChange} 
+                onKeyPress={handleKeyPress} 
+                defaultValue={query.bedroom}
+                disabled={isLandProperty}
+              >
+                <option value="">any</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
+            <div className="item">
+              <label htmlFor="bathroom">Bathrooms</label>
+              <select 
+                name="bathroom" 
+                id="bathroom" 
+                onChange={handleChange} 
+                onKeyPress={handleKeyPress} 
+                defaultValue={query.bathroom}
+                disabled={isLandProperty}
+              >
+                <option value="">any</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4+</option>
+              </select>
+            </div>
+          </>
+        )}
         <div className="item">
           <label htmlFor="minPrice">Min Price</label>
           <input

@@ -21,6 +21,7 @@ function NewPostPage() {
  
    const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
+  const [propertyType, setPropertyType] = useState('apartment');
 
 useEffect(() => {
   if (editorRef.current && !quillInstance.current) {
@@ -117,6 +118,10 @@ useEffect(() => {
     });
   };
 
+  const handlePropertyTypeChange = (e) => {
+    setPropertyType(e.target.value);
+  };
+
   return (
     <div className="updatePostPage">
       <div className="container">
@@ -156,21 +161,17 @@ useEffect(() => {
           <div className={`tab-content ${activeTab === 'basic' ? 'active' : ''}`}>
             <div className="form-group">
               <label htmlFor="title">Title</label>
-              <input id="title" name="title" type="text"required />
+              <input id="title" name="title" type="text" required />
             </div>
             
             <div className="form-group">
               <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number"  required />
+              <input id="price" name="price" type="number" required />
             </div>
             
             <div className="form-group">
               <label htmlFor="type">Type</label>
-              <select 
-                name="type" 
-              
-              
-              >
+              <select name="type" required>
                 <option value="rent">Rent</option>
                 <option value="sale">Sale</option>
               </select>
@@ -180,8 +181,8 @@ useEffect(() => {
               <label htmlFor="property">Property Type</label>
               <select 
                 name="property" 
-            
-                
+                onChange={handlePropertyTypeChange}
+                required
               >
                 <option value="apartment">Apartment</option>
                 <option value="house">House</option>
@@ -189,15 +190,19 @@ useEffect(() => {
               </select>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="bedroom">Bedrooms</label>
-              <input min={1} id="bedroom" name="bedroom" type="number" required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="bathroom">Bathrooms</label>
-              <input min={1} id="bathroom" name="bathroom" type="number"  required />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="bedroom">Bedrooms</label>
+                  <input min={1} id="bedroom" name="bedroom" type="number" required={propertyType !== 'land'} />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="bathroom">Bathrooms</label>
+                  <input min={1} id="bathroom" name="bathroom" type="number" required={propertyType !== 'land'} />
+                </div>
+              </>
+            )}
             
             <div className="form-group full-width">
               <label htmlFor="desc">Description</label>
@@ -213,10 +218,12 @@ useEffect(() => {
               <input min={0} id="size" name="size" type="number" required />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="builduparea">Build Up Area (sqft)</label>
-              <input min={0} id="builduparea" name="builduparea" type="number" required />
-            </div>
+            {propertyType !== 'land' && (
+              <div className="form-group">
+                <label htmlFor="builduparea">Build Up Area (sqft)</label>
+                <input min={0} id="builduparea" name="builduparea" type="number" required={propertyType !== 'land'} />
+              </div>
+            )}
 
             <div className="form-group">
               <label htmlFor="roadacess">Road Access</label>
@@ -240,65 +247,85 @@ useEffect(() => {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="floor">Floor</label>
-              <input min={1} id="floor" name="floor" type="number" required />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="floor">Floor</label>
+                  <input min={1} id="floor" name="floor" type="number" required={propertyType !== 'land'} />
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="builtyear">Built Year</label>
-              <input min={1900} max={new Date().getFullYear()} id="builtyear" name="builtyear" type="number" required />
-            </div>
+                <div className="form-group">
+                  <label htmlFor="builtyear">Built Year</label>
+                  <input 
+                    min={1900} 
+                    max={new Date().getFullYear()} 
+                    id="builtyear" 
+                    name="builtyear" 
+                    type="number" 
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="parking">Parking</label>
-              <input 
-                id="parking" 
-                name="parking" 
-                type="text" 
-                placeholder="e.g., 2 car, bike" 
-                required 
-              />
-            </div>
+                <div className="form-group">
+                  <label htmlFor="parking">Parking</label>
+                  <input 
+                    id="parking" 
+                    name="parking" 
+                    type="text" 
+                    placeholder="e.g., 2 car, bike" 
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
+              </>
+            )}
 
             <div className="form-group full-width">
-              <label htmlFor="amenities">Amenities (comma separated)</label>
+              <label htmlFor="amenities">
+                {propertyType === 'land' ? 'Features' : 'Amenities'} (comma separated)
+              </label>
               <input 
                 id="amenities" 
                 name="amenities" 
                 type="text" 
-                placeholder="e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace" 
+                placeholder={propertyType === 'land' 
+                  ? "e.g., Electricity, Water Supply, Road Access, Drainage" 
+                  : "e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace"
+                }
                 required 
               />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="utilities">Utilities Policy</label>
-              <select name="utilities" required>
-                <option value="owner">Owner is responsible</option>
-                <option value="tenant">Tenant is responsible</option>
-                <option value="shared">Shared</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="pet">Pet Policy</label>
-              <select name="pet" required>
-                <option value="allowed">Allowed</option>
-                <option value="not-allowed">Not Allowed</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="income">Income Policy</label>
-              <input
-                id="income"
-                name="income"
-                type="text"
-                placeholder="Income Policy"
-                required
-              />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="utilities">Utilities Policy</label>
+                  <select name="utilities" required={propertyType !== 'land'}>
+                    <option value="owner">Owner is responsible</option>
+                    <option value="tenant">Tenant is responsible</option>
+                    <option value="shared">Shared</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="pet">Pet Policy</label>
+                  <select name="pet" required={propertyType !== 'land'}>
+                    <option value="allowed">Allowed</option>
+                    <option value="not-allowed">Not Allowed</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="income">Income Policy</label>
+                  <input
+                    id="income"
+                    name="income"
+                    type="text"
+                    placeholder="Income Policy"
+                    required={propertyType !== 'land'}
+                  />
+                </div>
+              </>
+            )}
           </div>
           
           <div className={`tab-content ${activeTab === 'location' ? 'active' : ''}`}>

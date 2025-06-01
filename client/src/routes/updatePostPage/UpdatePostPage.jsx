@@ -21,6 +21,7 @@ function UpdatePostPage() {
   const quillInstance = useRef(null);
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [propertyType, setPropertyType] = useState('apartment');
   
 
   useEffect(() => {
@@ -60,6 +61,12 @@ function UpdatePostPage() {
       quillInstance.current.on('text-change', () => {
         setValue(quillInstance.current.root.innerHTML);
       });
+    }
+  }, [post]);
+
+  useEffect(() => {
+    if (post?.property) {
+      setPropertyType(post.property);
     }
   }, [post]);
 
@@ -137,6 +144,14 @@ function UpdatePostPage() {
     }
   };
 
+  const handlePropertyTypeChange = (e) => {
+    setPropertyType(e.target.value);
+    setPost(prev => ({
+      ...prev,
+      property: e.target.value
+    }));
+  };
+
   return (
     <div className="updatePostPage">
       <div className="container">
@@ -191,6 +206,7 @@ function UpdatePostPage() {
                 name="type" 
                 defaultValue={post?.type || "rent"}
                 onChange={(e) => setPost({ ...post, type: e.target.value })}
+                required
               >
                 <option value="rent">Rent</option>
                 <option value="sale">Sale</option>
@@ -202,7 +218,8 @@ function UpdatePostPage() {
               <select 
                 name="property" 
                 defaultValue={post?.property || "apartment"}
-                onChange={(e) => setPost({ ...post, property: e.target.value })}
+                onChange={handlePropertyTypeChange}
+                required
               >
                 <option value="apartment">Apartment</option>
                 <option value="house">House</option>
@@ -210,15 +227,33 @@ function UpdatePostPage() {
               </select>
             </div>
             
-            <div className="form-group">
-              <label htmlFor="bedroom">Bedrooms</label>
-              <input min={1} id="bedroom" name="bedroom" type="number" defaultValue={post?.bedroom} required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="bathroom">Bathrooms</label>
-              <input min={1} id="bathroom" name="bathroom" type="number" defaultValue={post?.bathroom} required />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="bedroom">Bedrooms</label>
+                  <input 
+                    min={1} 
+                    id="bedroom" 
+                    name="bedroom" 
+                    type="number" 
+                    defaultValue={post?.bedroom}
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="bathroom">Bathrooms</label>
+                  <input 
+                    min={1} 
+                    id="bathroom" 
+                    name="bathroom" 
+                    type="number" 
+                    defaultValue={post?.bathroom}
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
+              </>
+            )}
             
             <div className="form-group full-width">
               <label htmlFor="desc">Description</label>
@@ -231,13 +266,29 @@ function UpdatePostPage() {
           <div className={`tab-content ${activeTab === 'details' ? 'active' : ''}`}>
             <div className="form-group">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number" defaultValue={post?.postDetail?.size} required />
+              <input 
+                min={0} 
+                id="size" 
+                name="size" 
+                type="number" 
+                defaultValue={post?.postDetail?.size} 
+                required 
+              />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="builduparea">Build Up Area (sqft)</label>
-              <input min={0} id="builduparea" name="builduparea" type="number" defaultValue={post?.postDetail?.builduparea} required />
-            </div>
+            {propertyType !== 'land' && (
+              <div className="form-group">
+                <label htmlFor="builduparea">Build Up Area (sqft)</label>
+                <input 
+                  min={0} 
+                  id="builduparea" 
+                  name="builduparea" 
+                  type="number" 
+                  defaultValue={post?.postDetail?.builduparea}
+                  required={propertyType !== 'land'} 
+                />
+              </div>
+            )}
 
             <div className="form-group">
               <label htmlFor="roadacess">Road Access</label>
@@ -269,97 +320,112 @@ function UpdatePostPage() {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="floor">Floor</label>
-              <input 
-                min={1} 
-                id="floor" 
-                name="floor" 
-                type="number" 
-                defaultValue={post?.postDetail?.floor} 
-                required 
-              />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="floor">Floor</label>
+                  <input 
+                    min={1} 
+                    id="floor" 
+                    name="floor" 
+                    type="number" 
+                    defaultValue={post?.postDetail?.floor}
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="builtyear">Built Year</label>
-              <input 
-                min={1900} 
-                max={2082} 
-                id="builtyear" 
-                name="builtyear" 
-                type="number" 
-                defaultValue={post?.postDetail?.builtyear} 
-                required 
-              />
-            </div>
+                <div className="form-group">
+                  <label htmlFor="builtyear">Built Year</label>
+                  <input 
+                    min={1900} 
+                    max={new Date().getFullYear()} 
+                    id="builtyear" 
+                    name="builtyear" 
+                    type="number" 
+                    defaultValue={post?.postDetail?.builtyear}
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="parking">Parking</label>
-              <input 
-                id="parking" 
-                name="parking" 
-                type="text" 
-                placeholder="e.g., 2 car, bike" 
-                defaultValue={post?.postDetail?.parking}
-                required 
-              />
-            </div>
+                <div className="form-group">
+                  <label htmlFor="parking">Parking</label>
+                  <input 
+                    id="parking" 
+                    name="parking" 
+                    type="text" 
+                    placeholder="e.g., 2 car, bike" 
+                    defaultValue={post?.postDetail?.parking}
+                    required={propertyType !== 'land'} 
+                  />
+                </div>
+              </>
+            )}
 
             <div className="form-group full-width">
-              <label htmlFor="amenities">Amenities (comma separated)</label>
+              <label htmlFor="amenities">
+                {propertyType === 'land' ? 'Features' : 'Amenities'} (comma separated)
+              </label>
               <input 
                 id="amenities" 
                 name="amenities" 
                 type="text" 
-                placeholder="e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace" 
+                placeholder={propertyType === 'land' 
+                  ? "e.g., Electricity, Water Supply, Road Access, Drainage" 
+                  : "e.g., Earthquake Resistant, Marbel, Parquet, Parking, Drinking Water, Terrace"
+                }
                 defaultValue={post?.postDetail?.amenities}
                 required 
               />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="utilities">Utilities Policy</label>
-              <select 
-                name="utilities" 
-                defaultValue={post?.postDetail?.utilities || "owner"}
-                onChange={(e) => setPost({ 
-                  ...post, 
-                  postDetail: { ...post?.postDetail, utilities: e.target.value } 
-                })}
-              >
-                <option value="owner">Owner is responsible</option>
-                <option value="tenant">Tenant is responsible</option>
-                <option value="shared">Shared</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="pet">Pet Policy</label>
-              <select 
-                name="pet" 
-                defaultValue={post?.postDetail?.pet || "not-allowed"}
-                onChange={(e) => setPost({ 
-                  ...post, 
-                  postDetail: { ...post?.postDetail, pet: e.target.value } 
-                })}
-              >
-                <option value="allowed">Allowed</option>
-                <option value="not-allowed">Not Allowed</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="income">Income Policy</label>
-              <input
-                id="income"
-                name="income"
-                type="text"
-                placeholder="Income Policy"
-                defaultValue={post?.postDetail?.income}
-                required
-              />
-            </div>
+            {propertyType !== 'land' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="utilities">Utilities Policy</label>
+                  <select 
+                    name="utilities" 
+                    defaultValue={post?.postDetail?.utilities || "owner"}
+                    onChange={(e) => setPost({ 
+                      ...post, 
+                      postDetail: { ...post?.postDetail, utilities: e.target.value } 
+                    })}
+                    required={propertyType !== 'land'}
+                  >
+                    <option value="owner">Owner is responsible</option>
+                    <option value="tenant">Tenant is responsible</option>
+                    <option value="shared">Shared</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="pet">Pet Policy</label>
+                  <select 
+                    name="pet" 
+                    defaultValue={post?.postDetail?.pet || "not-allowed"}
+                    onChange={(e) => setPost({ 
+                      ...post, 
+                      postDetail: { ...post?.postDetail, pet: e.target.value } 
+                    })}
+                    required={propertyType !== 'land'}
+                  >
+                    <option value="allowed">Allowed</option>
+                    <option value="not-allowed">Not Allowed</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="income">Income Policy</label>
+                  <input
+                    id="income"
+                    name="income"
+                    type="text"
+                    placeholder="Income Policy"
+                    defaultValue={post?.postDetail?.income}
+                    required={propertyType !== 'land'}
+                  />
+                </div>
+              </>
+            )}
           </div>
           
           <div className={`tab-content ${activeTab === 'location' ? 'active' : ''}`}>

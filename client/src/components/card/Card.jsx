@@ -13,6 +13,7 @@ function Card({ item ,canDelete=false}) {
   const navigator = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const { showToast } = useToast();
+  const isLandProperty = item.property === 'land';
 
 
 
@@ -29,7 +30,8 @@ function Card({ item ,canDelete=false}) {
   };
     const handleMessageClick = async () => {
     if(!currentUser){
-      redirect('/login');
+      navigator('/login');
+      return;
     }
     if(currentUser.id == item.userId){
       navigator('/profile');
@@ -61,13 +63,26 @@ function Card({ item ,canDelete=false}) {
         <p className="price">$ {item.price}</p>
         <div className="bottom">
           <div className="features">
+            {!isLandProperty ? (
+              <>
+                <div className="feature">
+                  <img src="/bed.png" alt="" />
+                  <span>{item.bedroom} bedroom</span>
+                </div>
+                <div className="feature">
+                  <img src="/bath.png" alt="" />
+                  <span>{item.bathroom} bathroom</span>
+                </div>
+              </>
+            ) : (
+              <div className="feature">
+                <img src="/size.png" alt="" />
+                <span>{item.postDetail?.size} sqft</span>
+              </div>
+            )}
             <div className="feature">
-              <img src="/bed.png" alt="" />
-              <span>{item.bedroom} bedroom</span>
-            </div>
-            <div className="feature">
-              <img src="/bath.png" alt="" />
-              <span>{item.bathroom} bathroom</span>
+              <img src="/property.png" alt="" />
+              <span>{item.property.charAt(0).toUpperCase() + item.property.slice(1)}</span>
             </div>
           </div>
           <div className="icons">
