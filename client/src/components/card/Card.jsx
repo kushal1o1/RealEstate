@@ -6,6 +6,7 @@ import apiRequest from "../../lib/apiRequest";
 import { useNavigate } from "react-router-dom";
 import Alert from "../alert/Alert";
 import { useToast } from "../../context/ToastContext";
+import { formatNepaliPrice } from "../../utils/formatUtils";
 
 
 function Card({ item ,canDelete=false}) {
@@ -60,7 +61,7 @@ function Card({ item ,canDelete=false}) {
           <img src="/pin.png" alt="" />
           <span>{item.address},{item.city}</span>
         </p>
-        <p className="price">$ {item.price}</p>
+        <p className="price">{formatNepaliPrice(item.price)}</p>
         <div className="bottom">
           <div className="features">
             {!isLandProperty ? (

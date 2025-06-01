@@ -138,7 +138,7 @@ const SavedPosts = ({
                     </span>
                   </td>
                   <td className="data-table__cell">
-                    ${savedPost.post.price?.toLocaleString()}
+                    Rs {savedPost.post.price?.toLocaleString()}
                   </td>
                   <td className="data-table__cell">
                     {formatDate(savedPost.createdAt)}

@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { useToast } from "../../context/ToastContext";
+import { formatNepaliPrice } from "../../utils/formatUtils";
 
 
 function SinglePage() {
@@ -72,7 +73,7 @@ function SinglePage() {
                   <img src="/pin.png" alt="" />
                   <span>{post.address}</span>
                 </div>
-                <div className="price">$ {post.price}</div>
+                <div className="price">{formatNepaliPrice(post.price)}</div>
               </div>
               <div className="user">
                 <img src={post.user.avatar || './noavatar.jpg'} alt="" />

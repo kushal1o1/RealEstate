@@ -28,7 +28,7 @@ const handleChange = (e) => {
             onClick={() => switchType(type)}
             className={query.type === type ? "active" : ""}
           >
-            {type}
+            {type=== "sale" ? "For Buy" : "For Rent"}
           </button>
         ))}
       </div>

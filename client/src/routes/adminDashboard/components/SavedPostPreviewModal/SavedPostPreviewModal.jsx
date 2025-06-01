@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, User, Home, Calendar, MapPin, DollarSign } from 'lucide-react';
+import { X, User, Home, Calendar, MapPin } from 'lucide-react';
 import './savedPostPreviewModal.scss';
 
 const SavedPostPreviewModal = ({ savedPost, onClose }) => {
@@ -41,8 +41,7 @@ const SavedPostPreviewModal = ({ savedPost, onClose }) => {
                   <span>{post.property}</span>
                 </div>
                 <div className="property-info-item">
-                  <DollarSign size={16} />
-                  <span>${post.price?.toLocaleString()}</span>
+                  <span>Rs {post.price?.toLocaleString()}</span>
                 </div>
                 <div className="property-info-item">
                   <MapPin size={16} />

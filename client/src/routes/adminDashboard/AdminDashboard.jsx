@@ -38,6 +38,7 @@ import CreateUserModal from './components/CreateUserModal/CreateUserModal';
 // import CreatePropertyModal from './components/CreatePropertyModal/CreatePropertyModal';
 import { convertToCSV, downloadCSV, formatDateForExport, formatNumberForExport, formatArrayForExport } from '../../utils/exportUtils';
 import { AuthContext } from '../../context/AuthContext';
+import { formatNepaliPrice } from '../../utils/formatUtils';
 // // Mock your apiRequest import
 // const apiRequest = {
 //   get: async (url) => {
@@ -940,7 +941,7 @@ const AdminDashboard = () => {
               <span className="badge">{post.type}</span>
             </td>
             <td className="data-table__cell">
-              ${post.price?.toLocaleString()}
+              {formatNepaliPrice(post.price)}
             </td>
             <td className="data-table__cell">
               <div className="location-info">

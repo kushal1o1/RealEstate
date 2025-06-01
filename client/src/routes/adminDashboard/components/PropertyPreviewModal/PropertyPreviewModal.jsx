@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Home, DollarSign, MapPin, Calendar, User, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Home, MapPin, Calendar, User, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react';
 import './PropertyPreviewModal.scss';
 
 const PropertyPreviewModal = ({ property, onClose }) => {
@@ -101,8 +101,7 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                   <span className="badge badge--property">{property.property}</span>
                 </div>
                 <div className="property-info__price">
-                  <DollarSign size={20} />
-                  <span>${property.price?.toLocaleString()}</span>
+                  <span>Rs. {property.price?.toLocaleString()}</span>
                 </div>
                 <div className="property-info__location">
                   <MapPin size={16} />
