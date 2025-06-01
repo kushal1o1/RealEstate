@@ -56,7 +56,7 @@ function Card({ item ,canDelete=false}) {
         </h2>
         <p className="address">
           <img src="/pin.png" alt="" />
-          <span>{item.address}</span>
+          <span>{item.address},{item.city}</span>
         </p>
         <p className="price">$ {item.price}</p>
         <div className="bottom">

@@ -285,7 +285,7 @@ function UpdatePostPage() {
               <label htmlFor="builtyear">Built Year</label>
               <input 
                 min={1900} 
-                max={new Date().getFullYear()} 
+                max={2082} 
                 id="builtyear" 
                 name="builtyear" 
                 type="number" 
