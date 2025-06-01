@@ -5,19 +5,40 @@ console.log("post controller");
 export const getPosts = async (req, res) => {
   const query = req.query;
 
-
   try {
     const posts = await prisma.post.findMany({
       where: {
-       
+        city: query.city ? { 
+          contains: query.city,
+          mode: 'insensitive' // This makes the search case-insensitive
+        } : undefined,
         type: query.type || undefined,
         property: query.property || undefined,
         bedroom: parseInt(query.bedroom) || undefined,
+        bathroom: parseInt(query.bathroom) || undefined,
         price: {
           gte: parseInt(query.minPrice) || undefined,
           lte: parseInt(query.maxPrice) || undefined,
         },
+        postDetail: query.amenities ? {
+          amenities: {
+            contains: query.amenities,
+            mode: 'insensitive'
+          }
+        } : undefined
       },
+      include: {
+        postDetail: true,
+        user: {
+          select: {
+            username: true,
+            avatar: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
     // setTimeout(() => {
     res.status(200).json(posts);

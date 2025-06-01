@@ -1,7 +1,8 @@
 import "./filter.scss";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-function Filter() {
+
+function Filter({ onSearch }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState({
     city: searchParams.get("city") || "",
@@ -9,18 +10,29 @@ function Filter() {
     property: searchParams.get("property") || "",
     minPrice: searchParams.get("minPrice") || 0,
     maxPrice: searchParams.get("maxPrice") || 10000000000,
-    bedroom: searchParams.get("bedroom") || 1,
-
+    bedroom: searchParams.get("bedroom") || 0,
+    bathroom: searchParams.get("bathroom") || 0,
   });
+
   const handleChange = (e) => {
     setQuery((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
-const handleFilter = (e) => {
+
+  const handleFilter = (e) => {
     e.preventDefault();
     setSearchParams(query);
+    if (onSearch) {
+      onSearch(query);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleFilter(e);
+    }
   };
 
   return (
@@ -37,15 +49,15 @@ const handleFilter = (e) => {
             name="city"
             placeholder="City Location"
             onChange={handleChange}
-            defaultValue={query.city === "undefined"? '': query.city}
-
+            onKeyPress={handleKeyPress}
+            defaultValue={query.city === "undefined" ? '' : query.city}
           />
         </div>
       </div>
       <div className="bottom">
         <div className="item">
           <label htmlFor="type">Type</label>
-          <select name="type" id="type" onChange={handleChange} defaultValue={query.type}>
+          <select name="type" id="type" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.type}>
             <option value="">any</option>
             <option value="sale">Buy</option>
             <option value="rent">Rent</option>
@@ -53,12 +65,32 @@ const handleFilter = (e) => {
         </div>
         <div className="item">
           <label htmlFor="property">Property</label>
-          <select name="property" id="property" onChange={handleChange}   defaultValue={query.property}>
+          <select name="property" id="property" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.property}>
             <option value="">any</option>
             <option value="apartment">Apartment</option>
             <option value="house">House</option>
-            {/* <option value="condo">Condo</option> */}
             <option value="land">Land</option>
+          </select>
+        </div>
+        <div className="item">
+          <label htmlFor="bedroom">Bedrooms</label>
+          <select name="bedroom" id="bedroom" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.bedroom}>
+            <option value="">any</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div className="item">
+          <label htmlFor="bathroom">Bathrooms</label>
+          <select name="bathroom" id="bathroom" onChange={handleChange} onKeyPress={handleKeyPress} defaultValue={query.bathroom}>
+            <option value="">any</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
           </select>
         </div>
         <div className="item">
@@ -69,29 +101,20 @@ const handleFilter = (e) => {
             name="minPrice"
             placeholder="any"
             onChange={handleChange}
+            onKeyPress={handleKeyPress}
             defaultValue={query.minPrice}
           />
         </div>
         <div className="item">
           <label htmlFor="maxPrice">Max Price</label>
           <input
-            type="text"
+            type="number"
             id="maxPrice"
             name="maxPrice"
             placeholder="any"
             onChange={handleChange}
+            onKeyPress={handleKeyPress}
             defaultValue={query.maxPrice}
-          />
-        </div>
-        <div className="item">
-          <label htmlFor="bedroom">Bedroom</label>
-          <input
-            type="text"
-            id="bedroom"
-            name="bedroom"
-            placeholder="any"
-            onChange={handleChange}
-            defaultValue={query.bedroom}
           />
         </div>
         <button onClick={handleFilter}>
