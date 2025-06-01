@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Shield } from 'lucide-react';
 import './createUserModal.scss';
 import apiRequest from '../../../../lib/apiRequest';
 
@@ -8,16 +8,17 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    isAdmin: false
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -35,7 +36,8 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
       await apiRequest.post('/auth/register', {
         username: formData.username,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        role: formData.isAdmin ? 'ADMIN' : 'USER'
       });
       
       onSuccess();
@@ -44,7 +46,8 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
         username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        isAdmin: false
       });
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create user');
@@ -60,7 +63,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
       <div className="create-user-modal">
         <div className="create-user-modal__header">
           <h2>Create New User</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="create-user-modal__close" onClick={onClose}>
             <X size={20} />
           </button>
         </div>
@@ -120,6 +123,22 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
             />
           </div>
 
+          <div className="form-group form-group--checkbox">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="isAdmin"
+                checked={formData.isAdmin}
+                onChange={handleChange}
+              />
+              <Shield size={16} />
+              <span>Create as Administrator</span>
+            </label>
+            <p className="checkbox-description">
+              Administrators have full access to manage users, properties, and system settings.
+            </p>
+          </div>
+
           <div className="form-actions">
             <button 
               type="button" 
@@ -134,7 +153,7 @@ const CreateUserModal = ({ isOpen, onClose, onSuccess }) => {
               className="btn btn--primary"
               disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create User'}
+              {loading ? 'Creating...' : formData.isAdmin ? 'Create Administrator' : 'Create User'}
             </button>
           </div>
         </form>
