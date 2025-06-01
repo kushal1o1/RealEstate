@@ -3,3 +3,11 @@
     flex-direction: column;
     gap: 50px;
   }
+  .no-posts{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    color: #888;
+  }

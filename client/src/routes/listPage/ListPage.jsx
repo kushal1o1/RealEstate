@@ -33,11 +33,18 @@ function ListPage() {
               resolve={data.postResponse}
               errorElement={<Loader message="Error loading posts" />}
             >
+   
               {(postResponse) => (
+                postResponse.data.length === 0 ? (
+                  <div className='no-posts'>
+                    <p>No posts found. Try a different search.
+                    </p>
+                  </div>
+                ) : (
                 postResponse.data.map(item => (
                   <Card key={item.id} item={item} />
                 ))
-              )}
+              ))}
             </Await>
           </Suspense>
         </div>
