@@ -8,10 +8,20 @@ export const getPosts = async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       where: {
-        city: query.city ? { 
-          contains: query.city,
-          mode: 'insensitive' // This makes the search case-insensitive
-        } : undefined,
+        OR: query.city ? [
+          {
+            city: { 
+              contains: query.city,
+              mode: 'insensitive'
+            }
+          },
+          {
+            address: {
+              contains: query.city,
+              mode: 'insensitive'
+            }
+          }
+        ] : undefined,
         type: query.type || undefined,
         property: query.property || undefined,
         bedroom: parseInt(query.bedroom) || undefined,
@@ -19,13 +29,7 @@ export const getPosts = async (req, res) => {
         price: {
           gte: parseInt(query.minPrice) || undefined,
           lte: parseInt(query.maxPrice) || undefined,
-        },
-        postDetail: query.amenities ? {
-          amenities: {
-            contains: query.amenities,
-            mode: 'insensitive'
-          }
-        } : undefined
+        }
       },
       include: {
         postDetail: true,
