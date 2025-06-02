@@ -9,6 +9,13 @@ import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { useToast } from "../../context/ToastContext";
 import { formatNepaliPrice } from "../../utils/formatUtils";
+import { 
+  Building2, 
+  Calendar, 
+  Car, 
+  ArrowRight,
+  Compass
+} from "lucide-react";
 
 
 function SinglePage() {
@@ -194,7 +201,7 @@ function SinglePage() {
             </div>
 
             <div className="detailItem">
-              <img src="/facing.png" alt="" />
+              <Compass size={24} />
               <div className="detailText">
                 <span>Facing</span>
                 <p>{post.postDetail.Facing} ft</p>
@@ -204,7 +211,7 @@ function SinglePage() {
             {!isLandProperty && (
               <>
                 <div className="detailItem">
-                  <img src="/floor.png" alt="" />
+                  <Building2 size={24} />
                   <div className="detailText">
                     <span>Floor</span>
                     <p>{post.postDetail.floor}</p>
@@ -212,7 +219,7 @@ function SinglePage() {
                 </div>
 
                 <div className="detailItem">
-                  <img src="/year.png" alt="" />
+                  <Calendar size={24} />
                   <div className="detailText">
                     <span>Built Year</span>
                     <p>{post.postDetail.builtyear}</p>
@@ -220,7 +227,7 @@ function SinglePage() {
                 </div>
 
                 <div className="detailItem">
-                  <img src="/parking.png" alt="" />
+                  <Car size={24} />
                   <div className="detailText">
                     <span>Parking</span>
                     <p>{post.postDetail.parking}</p>
@@ -234,7 +241,7 @@ function SinglePage() {
           <div className="amenities">
             {post.postDetail.amenities?.split(',').map((amenity, index) => (
               <div key={index} className="amenity">
-                <img src="/check.png" alt="" />
+                <ArrowRight size={16} />
                 <span>{amenity.trim()}</span>
               </div>
             ))}
