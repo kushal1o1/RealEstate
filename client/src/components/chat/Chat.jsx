@@ -147,7 +147,7 @@ function Chat({chats}) {
                         alt={c.propertyDetails.title}
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.open(`/post/${c.propertyDetails.id}`, '_blank');
+                          window.open(`/${c.propertyDetails.id}`, '_blank');
                         }}
                       />
                     </div>
