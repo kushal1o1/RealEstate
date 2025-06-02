@@ -54,16 +54,49 @@ function SinglePage() {
   
   const handleConfirmChat = async () => {
     try {
-      await apiRequest.post('/chats',{receiverId:post.userId});
-      showToast("Redirecting to Chat", 'success');
-      navigator('/profile');
-    } catch(err) {
-      showToast("An error occurred while redirecting the message", 'error');
-      console.log(err);
-    } finally {
+      console.log('Creating chat with post:', post); // Debug log
+      
+      // Ensure we have all required post data
+      if (!post || !post.id || !post.title || !post.price || !post.images || !post.address) {
+        console.error('Missing required post data:', post);
+        throw new Error('Missing required property information');
+      }
+
+      const propertyDetails = {
+        id: post.id,
+        title: post.title,
+        price: post.price,
+        image: post.images[0],
+        address: post.address
+      };
+
+      // Create the request payload
+      const payload = {
+        receiverId: post.userId,
+        propertyDetails: propertyDetails
+      };
+
+      // Make the API request
+      const chatRes = await apiRequest.post("/chats", payload);
+
+      if (!chatRes.data || !chatRes.data.id) {
+        throw new Error("No chat ID found in response");
+      }
+
+      // Close the admin alert
       setShowAdminAlert(false);
+
+      // Navigate to the chat
+      navigator(`/profile`);
+      
+      // Show success message
+      showToast("Chat created successfully!", 'success');
+
+    } catch (err) {
+      console.error('Error in handleConfirmChat:', err);
+      showToast(err.response?.data?.message || "Failed to create chat", 'error');
     }
-  }
+  };
   
   const isLandProperty = post.property === 'land';
 

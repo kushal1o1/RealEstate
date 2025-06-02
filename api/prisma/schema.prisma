@@ -108,6 +108,7 @@ model Chat {
   seenBy  String[] @db.ObjectId
   messages Message[]
   lastMessage String?
+  propertyDetails Json?  
 }
 
 
