@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import { Calendar, TrendingUp, DollarSign, Users, Home, MessageSquare } from 'lucide-react';
+import { Calendar, DollarSign, Users, Home, MessageSquare, Activity } from 'lucide-react';
 import apiRequest from '../../../../lib/apiRequest';
 import './analytics.scss';
 
@@ -36,10 +36,18 @@ const Analytics = () => {
     userGrowth: [],
     propertyListings: [],
     messageTrends: [],
-    revenue: [],
-    userActivity: [],
+    revenue: { sales: [], rentals: [] },
     propertyTypes: [],
-    topLocations: []
+    topLocations: [],
+    userEngagement: {
+      activeUsers: 0,
+      topPosters: [],
+      topSavedProperties: []
+    },
+    communicationMetrics: {
+      topChats: [],
+      topParticipants: []
+    }
   });
 
   useEffect(() => {
@@ -55,10 +63,21 @@ const Analytics = () => {
         userGrowth: Array.isArray(response.data?.userGrowth) ? response.data.userGrowth : [],
         propertyListings: Array.isArray(response.data?.propertyListings) ? response.data.propertyListings : [],
         messageTrends: Array.isArray(response.data?.messageTrends) ? response.data.messageTrends : [],
-        revenue: Array.isArray(response.data?.revenue) ? response.data.revenue : [],
-        userActivity: Array.isArray(response.data?.userActivity) ? response.data.userActivity : [],
+        revenue: {
+          sales: Array.isArray(response.data?.revenue?.sales) ? response.data.revenue.sales : [],
+          rentals: Array.isArray(response.data?.revenue?.rentals) ? response.data.revenue.rentals : []
+        },
         propertyTypes: Array.isArray(response.data?.propertyTypes) ? response.data.propertyTypes : [],
-        topLocations: Array.isArray(response.data?.topLocations) ? response.data.topLocations : []
+        topLocations: Array.isArray(response.data?.topLocations) ? response.data.topLocations : [],
+        userEngagement: {
+          activeUsers: response.data?.userEngagement?.activeUsers || 0,
+          topPosters: Array.isArray(response.data?.userEngagement?.topPosters) ? response.data.userEngagement.topPosters : [],
+          topSavedProperties: Array.isArray(response.data?.userEngagement?.topSavedProperties) ? response.data.userEngagement.topSavedProperties : []
+        },
+        communicationMetrics: {
+          topChats: Array.isArray(response.data?.communicationMetrics?.topChats) ? response.data.communicationMetrics.topChats : [],
+          topParticipants: Array.isArray(response.data?.communicationMetrics?.topParticipants) ? response.data.communicationMetrics.topParticipants : []
+        }
       });
     } catch (error) {
       console.error('Error fetching analytics data:', error);
@@ -67,10 +86,18 @@ const Analytics = () => {
         userGrowth: [],
         propertyListings: [],
         messageTrends: [],
-        revenue: [],
-        userActivity: [],
+        revenue: { sales: [], rentals: [] },
         propertyTypes: [],
-        topLocations: []
+        topLocations: [],
+        userEngagement: {
+          activeUsers: 0,
+          topPosters: [],
+          topSavedProperties: []
+        },
+        communicationMetrics: {
+          topChats: [],
+          topParticipants: []
+        }
       });
     } finally {
       setLoading(false);
@@ -90,14 +117,14 @@ const Analytics = () => {
         display: true,
         text: 'User Growth',
         color: 'var(--color-text)'
-      },
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
           precision: 0,
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -105,7 +132,7 @@ const Analytics = () => {
       },
       x: {
         ticks: {
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -127,14 +154,14 @@ const Analytics = () => {
         display: true,
         text: 'Property Listings',
         color: 'var(--color-text)'
-      },
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
           precision: 0,
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -142,7 +169,7 @@ const Analytics = () => {
       },
       x: {
         ticks: {
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -164,14 +191,14 @@ const Analytics = () => {
         display: true,
         text: 'Message Trends',
         color: 'var(--color-text)'
-      },
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
           precision: 0,
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -179,7 +206,7 @@ const Analytics = () => {
       },
       x: {
         ticks: {
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -201,14 +228,14 @@ const Analytics = () => {
         display: true,
         text: 'Revenue Overview',
         color: 'var(--color-text)'
-      },
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
           callback: (value) => `$${value.toLocaleString()}`,
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -216,7 +243,7 @@ const Analytics = () => {
       },
       x: {
         ticks: {
-          color: 'var(--color-text-muted)'
+          color: 'var(--color-text)'
         },
         grid: {
           color: 'var(--color-border)'
@@ -238,8 +265,8 @@ const Analytics = () => {
         display: true,
         text: 'Property Types Distribution',
         color: 'var(--color-text)'
-      },
-    },
+      }
+    }
   };
 
   return (
@@ -348,21 +375,21 @@ const Analytics = () => {
           </div>
           {loading ? (
             <div className="loading-skeleton" />
-          ) : !Array.isArray(analyticsData.revenue) || analyticsData.revenue.length === 0 ? (
+          ) : !Array.isArray(analyticsData.revenue.sales) || analyticsData.revenue.sales.length === 0 ? (
             <div className="no-data-message">No revenue data available</div>
           ) : (
             <Bar
               data={{
-                labels: analyticsData.revenue.map(item => item?.date || ''),
+                labels: analyticsData.revenue.sales.map(item => item?.date || ''),
                 datasets: [
                   {
                     label: 'Sales',
-                    data: analyticsData.revenue.map(item => item?.sales || 0),
+                    data: analyticsData.revenue.sales.map(item => item?.amount || 0),
                     backgroundColor: 'rgba(75, 192, 192, 0.5)',
                   },
                   {
                     label: 'Rentals',
-                    data: analyticsData.revenue.map(item => item?.rentals || 0),
+                    data: analyticsData.revenue.rentals.map(item => item?.amount || 0),
                     backgroundColor: 'rgba(255, 159, 64, 0.5)',
                   }
                 ]
@@ -416,6 +443,79 @@ const Analytics = () => {
                   <span className="location-count">{location.count} properties</span>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* User Engagement Overview */}
+        <div className="analytics-card">
+          <div className="analytics-card__header">
+            <Activity size={20} />
+            <h3>User Engagement</h3>
+          </div>
+          {loading ? (
+            <div className="loading-skeleton" />
+          ) : (
+            <div className="engagement-overview">
+              <div className="engagement-stat">
+                <h4>Active Users</h4>
+                <p>{analyticsData.userEngagement.activeUsers}</p>
+              </div>
+              <div className="engagement-lists">
+                <div className="engagement-list">
+                  <h4>Top Posters</h4>
+                  {analyticsData.userEngagement.topPosters.map((user, index) => (
+                    <div key={user.username} className="list-item">
+                      <span className="rank">#{index + 1}</span>
+                      <span className="name">{user.username}</span>
+                      <span className="count">{user.postCount} posts</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="engagement-list">
+                  <h4>Most Saved Properties</h4>
+                  {analyticsData.userEngagement.topSavedProperties.map((property, index) => (
+                    <div key={property.title} className="list-item">
+                      <span className="rank">#{index + 1}</span>
+                      <span className="name">{property.title}</span>
+                      <span className="count">{property.savedCount} saves</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Communication Metrics */}
+        <div className="analytics-card">
+          <div className="analytics-card__header">
+            <MessageSquare size={20} />
+            <h3>Communication Activity</h3>
+          </div>
+          {loading ? (
+            <div className="loading-skeleton" />
+          ) : (
+            <div className="communication-overview">
+              <div className="communication-section">
+                <h4>Top Chats</h4>
+                {analyticsData.communicationMetrics.topChats.map((chat, index) => (
+                  <div key={chat.id} className="list-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="count">{chat.messageCount} messages</span>
+                  </div>
+                ))}
+              </div>
+              <div className="communication-section">
+                <h4>Top Participants</h4>
+                {analyticsData.communicationMetrics.topParticipants.map((user, index) => (
+                  <div key={user.username} className="list-item">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{user.username}</span>
+                    <span className="count">{user.chatCount} chats</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

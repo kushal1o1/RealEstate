@@ -21,7 +21,8 @@ import {
   Edit,
   Trash2,
   Plus,
-  Menu
+  Menu,
+  MapPin
 } from 'lucide-react';
 
 import './adminDashboard.scss'; // Import your CSS styles
@@ -39,6 +40,7 @@ import CreateUserModal from './components/CreateUserModal/CreateUserModal';
 import { convertToCSV, downloadCSV, formatDateForExport, formatNumberForExport, formatArrayForExport } from '../../utils/exportUtils';
 import { AuthContext } from '../../context/AuthContext';
 import { formatNepaliPrice } from '../../utils/formatUtils';
+import PropertyMap from './components/PropertyMap/PropertyMap';
 // // Mock your apiRequest import
 // const apiRequest = {
 //   get: async (url) => {
@@ -192,6 +194,7 @@ const Sidebar = React.memo(({ activeTab, setActiveTab, isOpen, onClose }) => {
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'users', label: 'Users', icon: Users },
     { id: 'posts', label: 'Properties', icon: Home },
+    { id: 'property-map', label: 'Property Map', icon: MapPin },
     { id: 'chats', label: 'Chats', icon: MessageSquare },
     { id: 'messages', label: 'Messages', icon: Mail },
     { id: 'saved-posts', label: 'Saved', icon: Bookmark }
@@ -1028,6 +1031,8 @@ const AdminDashboard = () => {
         return renderUsers();
       case 'posts':
         return renderPosts();
+      case 'property-map':
+        return <PropertyMap />;
       case 'chats':
         return renderChats();
       case 'messages':

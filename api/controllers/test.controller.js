@@ -724,7 +724,7 @@ export const getAnalytics = async (req, res) => {
             }
         });
 
-        // Get revenue data (example - adjust based on your actual revenue tracking)
+        // Get revenue data
         const revenue = await prisma.post.groupBy({
             by: ['createdAt', 'type'],
             where: {
@@ -766,6 +766,148 @@ export const getAnalytics = async (req, res) => {
             take: 5
         });
 
+        // Get user engagement metrics using existing models
+        const userEngagement = await Promise.all([
+            // Active users (users who have posted, saved, or messaged)
+            prisma.user.findMany({
+                where: {
+                    OR: [
+                        { posts: { some: { createdAt: { gte: startDate } } } },
+                        { savedPosts: { some: { createdAt: { gte: startDate } } } },
+                        { chats: { some: { messages: { some: { createdAt: { gte: startDate } } } } } }
+                    ]
+                },
+                select: { id: true }
+            }),
+            // Most active users by posts
+            prisma.user.findMany({
+                where: {
+                    posts: {
+                        some: {
+                            createdAt: { gte: startDate }
+                        }
+                    }
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    _count: {
+                        select: { posts: true }
+                    }
+                },
+                orderBy: {
+                    posts: {
+                        _count: 'desc'
+                    }
+                },
+                take: 5
+            }),
+            // Most saved properties
+            prisma.post.findMany({
+                where: {
+                    savedPosts: {
+                        some: {
+                            createdAt: { gte: startDate }
+                        }
+                    }
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    _count: {
+                        select: { savedPosts: true }
+                    }
+                },
+                orderBy: {
+                    savedPosts: {
+                        _count: 'desc'
+                    }
+                },
+                take: 5
+            })
+        ]);
+
+        // Get property status distribution (using post type and property)
+        const propertyStatus = await prisma.post.groupBy({
+            by: ['type', 'property'],
+            _count: true,
+            orderBy: {
+                _count: {
+                    type: 'desc'
+                }
+            }
+        });
+
+        // Get price trends by property type
+        const priceTrends = await prisma.post.groupBy({
+            by: ['createdAt', 'property', 'type'],
+            where: {
+                createdAt: { gte: startDate }
+            },
+            _avg: {
+                price: true
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Get communication metrics
+        const communicationMetrics = await Promise.all([
+            // Messages per chat
+            prisma.chat.findMany({
+                select: {
+                    id: true,
+                    _count: {
+                        select: { messages: true }
+                    }
+                },
+                orderBy: {
+                    messages: {
+                        _count: 'desc'
+                    }
+                },
+                take: 5
+            }),
+            // Most active chat participants
+            prisma.user.findMany({
+                where: {
+                    chats: {
+                        some: {
+                            messages: {
+                                some: {
+                                    createdAt: { gte: startDate }
+                                }
+                            }
+                        }
+                    }
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    _count: {
+                        select: {
+                            chats: {
+                                where: {
+                                    messages: {
+                                        some: {
+                                            createdAt: { gte: startDate }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                orderBy: {
+                    chats: {
+                        _count: 'desc'
+                    }
+                },
+                take: 5
+            })
+        ]);
+
         // Format the data for the frontend
         const formatDate = (date) => {
             return new Date(date).toLocaleDateString('en-US', {
@@ -797,7 +939,64 @@ export const getAnalytics = async (req, res) => {
             };
         };
 
+        // Format user engagement data
+        const formatUserEngagement = (data) => {
+            const [activeUsers, topPosters, topSaved] = data;
+            return {
+                activeUsers: activeUsers.length,
+                topPosters: topPosters.map(user => ({
+                    username: user.username,
+                    postCount: user._count.posts
+                })),
+                topSavedProperties: topSaved.map(post => ({
+                    title: post.title,
+                    savedCount: post._count.savedPosts
+                }))
+            };
+        };
+
+        // Format property status data
+        const formatPropertyStatus = (data) => {
+            return data.map(item => ({
+                type: `${item.type} - ${item.property}`,
+                count: item._count
+            }));
+        };
+
+        // Format price trends data
+        const formatPriceTrends = (data) => {
+            const trends = {};
+            data.forEach(item => {
+                const date = formatDate(item.createdAt);
+                const key = `${item.property}-${item.type}`;
+                if (!trends[date]) {
+                    trends[date] = {};
+                }
+                trends[date][key] = item._avg.price || 0;
+            });
+            return Object.entries(trends).map(([date, values]) => ({
+                date,
+                ...values
+            }));
+        };
+
+        // Format communication metrics
+        const formatCommunicationMetrics = (data) => {
+            const [topChats, topParticipants] = data;
+            return {
+                topChats: topChats.map(chat => ({
+                    id: chat.id,
+                    messageCount: chat._count.messages
+                })),
+                topParticipants: topParticipants.map(user => ({
+                    username: user.username,
+                    chatCount: user._count.chats
+                }))
+            };
+        };
+
         res.status(200).json({
+            // Existing analytics
             userGrowth: formatAnalyticsData(userGrowth),
             propertyListings: formatAnalyticsData(propertyListings),
             messageTrends: formatAnalyticsData(messageTrends),
@@ -809,7 +1008,12 @@ export const getAnalytics = async (req, res) => {
             topLocations: topLocations.map(item => ({
                 city: item.city,
                 count: item._count
-            }))
+            })),
+            // New analytics using existing models
+            userEngagement: formatUserEngagement(userEngagement),
+            propertyStatus: formatPropertyStatus(propertyStatus),
+            priceTrends: formatPriceTrends(priceTrends),
+            communicationMetrics: formatCommunicationMetrics(communicationMetrics)
         });
     } catch (err) {
         console.error('Error fetching analytics data:', err);
