@@ -1,0 +1,152 @@
+.property-map-dashboard {
+  padding: 1rem;
+  background-color: var(--color-bg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .property-map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+
+    h2 {
+      color: var(--color-text);
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      .filter-select,
+      .filter-input {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-size: 0.9rem;
+        min-width: 150px;
+
+        &:focus {
+          outline: none;
+          border-color: var(--color-primary);
+        }
+      }
+
+      .filter-input {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+  }
+
+  .map-container {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 120px);
+    min-height: 700px;
+    background: var(--color-bg-alt);
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+
+    .loading-skeleton {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        var(--color-bg) 25%,
+        var(--color-border) 50%,
+        var(--color-bg) 75%
+      );
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    .map {
+      width: 100%;
+      height: 100%;
+      min-height: 700px;
+    }
+  }
+
+  .map-stats {
+    display: flex;
+    gap: 2rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-alt);
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    margin-bottom: 0.5rem;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-text);
+      font-size: 0.9rem;
+
+      svg {
+        color: var(--color-primary);
+      }
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .property-map-dashboard {
+    padding: 1rem;
+
+    .property-map-header {
+      flex-direction: column;
+      align-items: stretch;
+
+      .filters {
+        flex-direction: column;
+
+        .filter-select,
+        .filter-input {
+          width: 100%;
+          min-width: unset;
+        }
+      }
+    }
+
+    .map-container {
+      height: calc(100vh - 150px);
+      min-height: 600px;
+
+      .map {
+        min-height: 600px;
+      }
+    }
+
+    .map-stats {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+  }
+} 
