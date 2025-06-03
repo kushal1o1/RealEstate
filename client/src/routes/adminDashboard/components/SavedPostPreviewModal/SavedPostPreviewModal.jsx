@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, User, Home, Calendar, MapPin } from 'lucide-react';
 import './savedPostPreviewModal.scss';
+import { formatNepaliPrice } from '../../../../utils/formatUtils';
 
 const SavedPostPreviewModal = ({ savedPost, onClose }) => {
   if (!savedPost) return null;
@@ -41,7 +42,7 @@ const SavedPostPreviewModal = ({ savedPost, onClose }) => {
                   <span>{post.property}</span>
                 </div>
                 <div className="property-info-item">
-                  <span>Rs {post.price?.toLocaleString()}</span>
+                  <span>{formatNepaliPrice(post.price)}</span>
                 </div>
                 <div className="property-info-item">
                   <MapPin size={16} />

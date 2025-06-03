@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import { useNotificationStore } from "../../lib/notificationStore";
+import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -25,7 +26,7 @@ function Navbar() {
         <a href="/about">About</a>
         <a href="/contact">Contact</a>
         {currentUser?.isAdmin && (
-          <a href="/admin-dashboard">Admin Dashboard</a>
+          <a href="/admin-dashboard">Dashboard</a>
         )}
       </div>
       <div className="right">
@@ -52,19 +53,38 @@ function Navbar() {
           </>
         )}
         <div className="menuIcon">
-          <img
-            src="/menu.png"
-            alt=""
-            onClick={() => setOpen((prev) => !prev)}
-          />
+          {open ? (
+            <X 
+              size={36} 
+              onClick={() => setOpen(false)}
+              style={{ cursor: 'pointer', color: 'white' }}
+            />
+          ) : (
+            <Menu 
+              size={36} 
+              onClick={() => setOpen(true)}
+              style={{ cursor: 'pointer', color: 'black' }}
+            />
+          )}
         </div>
         <div className={open ? "menu active" : "menu"}>
           <a href="/">Home</a>
-          <a href="/">About</a>
-          <a href="/">Contact</a>
-          <a href="/">Agents</a>
-          <a href="/">Sign in</a>
-          <a href="/">Sign up</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+          {currentUser?.isAdmin && (
+            <a href="/admin-dashboard">Dashboard</a>
+          )}
+          {currentUser ? (
+            <>
+              <Link to="/profile">Profile</Link>
+           
+            </>
+          ) : (
+            <>
+              <a href="/login">Sign in</a>
+              <a href="/register">Sign up</a>
+            </>
+          )}
         </div>
       </div>
     </nav>

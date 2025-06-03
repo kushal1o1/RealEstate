@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Home, MapPin, Calendar, User, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react';
 import './PropertyPreviewModal.scss';
+import {formatNepaliPrice} from '../../../../utils/formatUtils';
 
 const PropertyPreviewModal = ({ property, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -101,7 +102,7 @@ const PropertyPreviewModal = ({ property, onClose }) => {
                   <span className="badge badge--property">{property.property}</span>
                 </div>
                 <div className="property-info__price">
-                  <span>Rs. {property.price?.toLocaleString()}</span>
+                  <span>{formatNepaliPrice(property.price)}</span>
                 </div>
                 <div className="property-info__location">
                   <MapPin size={16} />

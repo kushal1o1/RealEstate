@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Mail, Calendar, Home, Bookmark, MessageSquare } from 'lucide-react';
 import './UserPreviewModal.scss';
+import {formatNepaliPrice} from '../../../../utils/formatUtils';
 
 const UserPreviewModal = ({ user, onClose }) => {
   if (!user) return null;
@@ -79,7 +80,7 @@ const UserPreviewModal = ({ user, onClose }) => {
                       <div className="property-card__details">
                         <span className="badge">{post.type}</span>
                         <span className="property-card__price">
-                          ${post.price?.toLocaleString()}
+                          {formatNepaliPrice(post.price)}
                         </span>
                       </div>
                       <div className="property-card__location">
@@ -108,7 +109,7 @@ const UserPreviewModal = ({ user, onClose }) => {
                       <div className="property-card__details">
                         <span className="badge">{savedPost.post.type}</span>
                         <span className="property-card__price">
-                          ${savedPost.post.price?.toLocaleString()}
+                          {formatNepaliPrice(savedPost.post.price)}
                         </span>
                       </div>
                       <div className="property-card__location">
