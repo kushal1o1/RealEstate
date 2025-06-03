@@ -41,8 +41,8 @@ model Post {
   images       String[]
   address    String
   city      String
-  bedroom   Int
-  bathroom  Int
+  bedroom   Int?
+  bathroom  Int?
   latitude  String
   longitude String
   type     Type
