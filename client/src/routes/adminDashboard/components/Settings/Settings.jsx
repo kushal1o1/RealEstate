@@ -8,11 +8,14 @@ const Settings = ({ isOpen, onClose }) => {
     return savedTheme || 'light';
   });
 
+  // Effect to apply theme when it changes
   useEffect(() => {
-    // Apply theme to document
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('adminTheme', theme);
-  }, [theme]);
+    const adminDashboard = document.querySelector('.admin-dashboard');
+    if (adminDashboard) {
+      adminDashboard.setAttribute('data-theme', theme);
+      localStorage.setItem('adminTheme', theme);
+    }
+  }, [theme]); // Add theme as dependency to update when it changes
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
