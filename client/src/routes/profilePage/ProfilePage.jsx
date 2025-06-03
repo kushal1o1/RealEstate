@@ -67,7 +67,7 @@ function ProfilePage() {
         </Suspense>
           <div className="title">
             <h1>Saved List</h1>
-          </div>.
+          </div>
                   <Suspense fallback={<Loader message="Loading Saved Posts..." />}>
         <Await resolve={data.postResponse}
         errorElement={<Loader message="Error loading saved posts" />}

@@ -757,13 +757,20 @@ export const getAnalytics = async (req, res) => {
         // Get top locations
         const topLocations = await prisma.post.groupBy({
             by: ['city'],
-            _count: true,
+            _count: {
+                id: true
+            },
             orderBy: {
                 _count: {
-                    city: 'desc'
+                    id: 'desc'
                 }
             },
-            take: 5
+            take: 5,
+            where: {
+                city: {
+                    not: '' // Exclude empty strings
+                }
+            }
         });
 
         // Get user engagement metrics using existing models
@@ -1006,8 +1013,8 @@ export const getAnalytics = async (req, res) => {
                 count: item._count
             })),
             topLocations: topLocations.map(item => ({
-                city: item.city,
-                count: item._count
+                city: item.city || 'Unknown',
+                count: item._count.id
             })),
             // New analytics using existing models
             userEngagement: formatUserEngagement(userEngagement),

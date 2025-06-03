@@ -69,6 +69,7 @@ nav {
       display: flex;
       align-items: center;
       font-weight: bold;
+      
 
       img{
         width: 32px;
@@ -80,9 +81,15 @@ nav {
       }
 
       span{
+
+        @include md {
+          display: none;
+        }
+        
         @include sm{
           display: none;
         }
+
       }
 
       .profile{
