@@ -9,7 +9,7 @@ function HomePage() {
   const {currentUser} = useContext(AuthContext);
    const { showToast } = useToast();
    useEffect(() => {
-       showToast('Welcome '+currentUser.username, 'info');
+       showToast('Welcome '+currentUser?.username, 'info');
      }, [showToast]);
   return (
     <div className="homePage">

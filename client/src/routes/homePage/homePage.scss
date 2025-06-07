@@ -65,7 +65,7 @@
 
   .imgContainer {
     flex: 2;
-    // background-color:$background-color;
+    background-color:$background-color;
     position: relative;
     display: flex;
     align-items: center;
@@ -77,9 +77,11 @@
     img {
       width: 115%;
       position: absolute;
+
       right: 0;
 
       @include lg {
+       
         width: 105%;
       }
     }
