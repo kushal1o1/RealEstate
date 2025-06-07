@@ -4,6 +4,7 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
+import LocationPicker from "../../components/map/LocationPicker";
 import { useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
 import Loader from "../../components/loader/Loader";
@@ -22,6 +23,7 @@ function UpdatePostPage() {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [propertyType, setPropertyType] = useState('apartment');
+  const [coordinates, setCoordinates] = useState({ lat: '', lng: '' });
   
 
   useEffect(() => {
@@ -70,6 +72,15 @@ function UpdatePostPage() {
     }
   }, [post]);
 
+  useEffect(() => {
+    if (post?.latitude && post?.longitude) {
+      setCoordinates({
+        lat: post.latitude.toString(),
+        lng: post.longitude.toString()
+      });
+    }
+  }, [post]);
+
   const fetchPost = async () => {
     try {
       setIsLoading(true);
@@ -94,12 +105,92 @@ function UpdatePostPage() {
     showToast("Image removed successfully", 'success');
   };
 
+  // Validation functions
+  const validatePrice = (price) => {
+    const numPrice = parseInt(price);
+    if (isNaN(numPrice) || numPrice <= 0) {
+      showToast("Price must be greater than 0", 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateNumericField = (value, fieldName, min = 0) => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue) || numValue < min) {
+      showToast(`${fieldName} must be ${min === 0 ? 'greater than or equal to 0' : `at least ${min}`}`, 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateCoordinates = (lat, lng) => {
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    if (isNaN(latNum) || isNaN(lngNum)) {
+      showToast("Invalid coordinates", 'error');
+      return false;
+    }
+    if (latNum < -90 || latNum > 90) {
+      showToast("Latitude must be between -90 and 90", 'error');
+      return false;
+    }
+    if (lngNum < -180 || lngNum > 180) {
+      showToast("Longitude must be between -180 and 180", 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateDistance = (value, fieldName) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue) || numValue < 0) {
+      showToast(`${fieldName} distance must be greater than or equal to 0`, 'error');
+      return false;
+    }
+    return true;
+  };
+
   const handleSumbit = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
     
+    // Validate all required fields
+    if (!validatePrice(inputs.price)) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (propertyType !== 'land') {
+      if (!validateNumericField(inputs.bedroom, 'Bedrooms', 1) ||
+          !validateNumericField(inputs.bathroom, 'Bathrooms', 1) ||
+          !validateNumericField(inputs.floor, 'Floor', 1)) {
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (!validateNumericField(inputs.size, 'Total Size') ||
+        !validateNumericField(inputs.facing, 'Facing') ||
+        !validateCoordinates(inputs.latitude, inputs.longitude) ||
+        !validateDistance(inputs.school, 'School') ||
+        !validateDistance(inputs.bus, 'Bus') ||
+        !validateDistance(inputs.restaurant, 'Restaurant')) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (propertyType !== 'land') {
+      if (!validateNumericField(inputs.builduparea, 'Build Up Area')) {
+        setIsLoading(false);
+        return;
+      }
+    }
+
     try {
       const res = await apiRequest.put("/posts/" + id, {
         postData: {
@@ -111,8 +202,8 @@ function UpdatePostPage() {
           bathroom: parseInt(inputs.bathroom),
           type: inputs.type,
           property: inputs.property,
-          latitude: inputs.latitude,
-          longitude: inputs.longitude,
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
           images: images,
         },
         postDetail: {
@@ -128,19 +219,19 @@ function UpdatePostPage() {
           builtyear: parseInt(inputs.builtyear),
           parking: inputs.parking,
           amenities: inputs.amenities,
-          school: parseInt(inputs.school),
-          bus: parseInt(inputs.bus),
-          restaurant: parseInt(inputs.restaurant),
+          school: parseFloat(inputs.school),
+          bus: parseFloat(inputs.bus),
+          restaurant: parseFloat(inputs.restaurant),
         }
       });
       showToast("Post Updated Successfully", 'success');
-      setIsLoading(false);
       navigate('/' + res.data.id);
     } catch (error) {
-      setIsLoading(false);
-      showToast("Error updating post", 'error');
       console.error("Error updating post:", error);
+      showToast(error.response?.data?.message || "Error updating post", 'error');
       setError(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -149,6 +240,22 @@ function UpdatePostPage() {
     setPost(prev => ({
       ...prev,
       property: e.target.value
+    }));
+  };
+
+  const handleMapClick = (lat, lng) => {
+    console.log('Setting coordinates:', lat, lng);
+    const newCoordinates = {
+      lat: lat.toString(),
+      lng: lng.toString()
+    };
+    setCoordinates(newCoordinates);
+    
+    // Update the post state with new coordinates as strings
+    setPost(prev => ({
+      ...prev,
+      latitude: lat.toString(),
+      longitude: lng.toString()
     }));
   };
 
@@ -175,6 +282,12 @@ function UpdatePostPage() {
             Property Details
           </button>
           <button 
+            className={activeTab === 'map' ? 'active' : ''} 
+            onClick={() => setActiveTab('map')}
+          >
+            Map Location
+          </button>
+          <button 
             className={activeTab === 'location' ? 'active' : ''} 
             onClick={() => setActiveTab('location')}
           >
@@ -196,8 +309,16 @@ function UpdatePostPage() {
             </div>
             
             <div className="form-group">
-              <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number" defaultValue={post?.price} required />
+              <label htmlFor="price">Price (NPR)</label>
+              <input 
+                id="price" 
+                name="price" 
+                type="number" 
+                min="1" 
+                defaultValue={post?.price} 
+                required 
+                placeholder="Enter price in NPR"
+              />
             </div>
             
             <div className="form-group">
@@ -335,15 +456,16 @@ function UpdatePostPage() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="builtyear">Built Year</label>
+                  <label htmlFor="builtyear">Built Year (B.S.)</label>
                   <input 
-                    min={1900} 
-                    max={2084} 
+                    min={2000} 
+                    max={2080} 
                     id="builtyear" 
                     name="builtyear" 
                     type="number" 
                     defaultValue={post?.postDetail?.builtyear}
                     required={propertyType !== 'land'} 
+                    placeholder="Enter year in B.S. (e.g., 2075)"
                   />
                 </div>
 
@@ -428,6 +550,32 @@ function UpdatePostPage() {
             )}
           </div>
           
+          {activeTab === 'map' && (
+            <div className={`tab-content map-tab active`}>
+              <div className="map-container">
+                <h3>Select Property Location</h3>
+                <p className="map-instruction">Click on the map to set the property location. The coordinates will be automatically saved.</p>
+                <div className="map-wrapper">
+                  <LocationPicker 
+                    key={activeTab}
+                    onLocationSelect={handleMapClick}
+                    initialPosition={coordinates.lat && coordinates.lng ? 
+                      [parseFloat(coordinates.lat), parseFloat(coordinates.lng)] : 
+                      null
+                    }
+                  />
+                </div>
+                {coordinates.lat && coordinates.lng && (
+                  <div className="coordinates-display">
+                    <p>Selected Location Coordinates:</p>
+                    <p>Latitude: {coordinates.lat}</p>
+                    <p>Longitude: {coordinates.lng}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
           <div className={`tab-content ${activeTab === 'location' ? 'active' : ''}`}>
             <div className="form-group">
               <label htmlFor="address">Address</label>
@@ -439,29 +587,50 @@ function UpdatePostPage() {
               <input id="city" name="city" type="text" defaultValue={post?.city} required />
             </div>
             
+            {/* Hidden inputs for coordinates */}
+            <input type="hidden" name="latitude" value={coordinates.lat} />
+            <input type="hidden" name="longitude" value={coordinates.lng} />
+            
             <div className="form-group">
-              <label htmlFor="latitude">Latitude</label>
-              <input id="latitude" name="latitude" type="text" defaultValue={post?.latitude} required />
+              <label htmlFor="school">Distance to School (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="school" 
+                name="school" 
+                type="number" 
+                defaultValue={post?.postDetail?.school} 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
             
             <div className="form-group">
-              <label htmlFor="longitude">Longitude</label>
-              <input id="longitude" name="longitude" type="text" defaultValue={post?.longitude} required />
+              <label htmlFor="bus">Distance to Bus (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="bus" 
+                name="bus" 
+                type="number" 
+                defaultValue={post?.postDetail?.bus} 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
             
             <div className="form-group">
-              <label htmlFor="school">Distance to School (miles)</label>
-              <input min={0} id="school" name="school" type="number" defaultValue={post?.postDetail?.school} required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="bus">Distance to Bus (miles)</label>
-              <input min={0} id="bus" name="bus" type="number" defaultValue={post?.postDetail?.bus} required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="restaurant">Distance to Restaurant (miles)</label>
-              <input min={0} id="restaurant" name="restaurant" type="number" defaultValue={post?.postDetail?.restaurant} required />
+              <label htmlFor="restaurant">Distance to Restaurant (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="restaurant" 
+                name="restaurant" 
+                type="number" 
+                defaultValue={post?.postDetail?.restaurant} 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
           </div>
           
@@ -506,7 +675,7 @@ function UpdatePostPage() {
                 type="button" 
                 className="prev-button"
                 onClick={() => {
-                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const tabs = ['basic', 'details', 'map', 'location', 'images'];
                   const currentIndex = tabs.indexOf(activeTab);
                   setActiveTab(tabs[currentIndex - 1]);
                 }}
@@ -520,7 +689,7 @@ function UpdatePostPage() {
                 type="button"
                 className="next-button"
                 onClick={() => {
-                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const tabs = ['basic', 'details', 'map', 'location', 'images'];
                   const currentIndex = tabs.indexOf(activeTab);
                   setActiveTab(tabs[currentIndex + 1]);
                 }}
@@ -529,7 +698,13 @@ function UpdatePostPage() {
               </button>
             )}
             
-            <button type="submit" className="submit-button">Update Post</button>
+            <button 
+              type="submit" 
+              className="submit-button"
+              disabled={!coordinates.lat || !coordinates.lng}
+            >
+              Update Post
+            </button>
           </div>
         </form>
       </div>

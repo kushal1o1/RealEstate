@@ -7,6 +7,7 @@ import UploadWidget from "../../components/uploadWidget/UploadWidget";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
 import Loader from "../../components/loader/Loader";
+import LocationPicker from "../../components/map/LocationPicker"; // Update import
 
 
 function NewPostPage() {
@@ -22,6 +23,16 @@ function NewPostPage() {
    const  navigate = useNavigate();
   const quillInstance = useRef(null); // Store Quill instance
   const [propertyType, setPropertyType] = useState('apartment');
+  const [coordinates, setCoordinates] = useState({ lat: "", lng: "" });
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    address: '',
+    city: '',
+    latitude: '',
+    longitude: '',
+    // ... other form fields
+  });
 
 useEffect(() => {
   if (editorRef.current && !quillInstance.current) {
@@ -51,16 +62,103 @@ useEffect(() => {
   }
 }, []);
 
+  // Validation functions
+  const validatePrice = (price) => {
+    const numPrice = parseInt(price);
+    if (isNaN(numPrice) || numPrice <= 0) {
+      showToast("Price must be greater than 0", 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateNumericField = (value, fieldName, min = 0) => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue) || numValue < min) {
+      showToast(`${fieldName} must be ${min === 0 ? 'greater than or equal to 0' : `at least ${min}`}`, 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateCoordinates = (lat, lng) => {
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    if (isNaN(latNum) || isNaN(lngNum)) {
+      showToast("Please select a location on the map", 'error');
+      return false;
+    }
+    if (latNum < -90 || latNum > 90) {
+      showToast("Invalid latitude value", 'error');
+      return false;
+    }
+    if (lngNum < -180 || lngNum > 180) {
+      showToast("Invalid longitude value", 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const validateDistance = (value, fieldName) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue) || numValue < 0) {
+      showToast(`${fieldName} distance must be greater than or equal to 0`, 'error');
+      return false;
+    }
+    return true;
+  };
+
+  const handleMapClick = (lat, lng) => {
+    console.log('Setting coordinates:', lat, lng);
+    setCoordinates({
+      lat: lat.toString(),
+      lng: lng.toString()
+    });
+  };
+
   const handleSumbit = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
     
-    // Remove amenities array processing
+    // Validate all required fields
+    if (!validatePrice(inputs.price)) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (propertyType !== 'land') {
+      if (!validateNumericField(inputs.bedroom, 'Bedrooms', 1) ||
+          !validateNumericField(inputs.bathroom, 'Bathrooms', 1) ||
+          !validateNumericField(inputs.floor, 'Floor', 1)) {
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (!validateNumericField(inputs.size, 'Total Size') ||
+        !validateNumericField(inputs.facing, 'Facing') ||
+        !validateCoordinates(coordinates.lat, coordinates.lng) ||
+        !validateDistance(inputs.school, 'School') ||
+        !validateDistance(inputs.bus, 'Bus') ||
+        !validateDistance(inputs.restaurant, 'Restaurant')) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (propertyType !== 'land') {
+      if (!validateNumericField(inputs.builduparea, 'Build Up Area')) {
+        setIsLoading(false);
+        return;
+      }
+    }
+
     try {
       const res = await apiRequest.post("/posts", {
-       postData:{
+        postData: {
           title: inputs.title,
           price: parseInt(inputs.price),
           address: inputs.address,
@@ -69,11 +167,11 @@ useEffect(() => {
           bathroom: parseInt(inputs.bathroom),
           type: inputs.type,
           property: inputs.property,
-          latitude: inputs.latitude,
-          longitude: inputs.longitude,
+          latitude: coordinates.lat, // Use string coordinates
+          longitude: coordinates.lng, // Use string coordinates
           images: images,
-       },
-       postDetail:{
+        },
+        postDetail: {
           desc: value,
           utilities: inputs.utilities,
           pet: inputs.pet,
@@ -85,27 +183,25 @@ useEffect(() => {
           floor: parseInt(inputs.floor),
           builtyear: parseInt(inputs.builtyear),
           parking: inputs.parking,
-          amenities: inputs.amenities, // Send as string directly
-          school: parseInt(inputs.school),
-          bus: parseInt(inputs.bus),
-          restaurant: parseInt(inputs.restaurant),
-       }
+          amenities: inputs.amenities,
+          school: parseFloat(inputs.school),
+          bus: parseFloat(inputs.bus),
+          restaurant: parseFloat(inputs.restaurant),
+        }
       });
       showToast("Post Created Successfully", 'success');
-      navigate('/'+ res.data.id);
-      setIsLoading(false);
-      
+      navigate('/' + res.data.id);
     } catch (error) {
-      setIsLoading(false);
-      showToast("Error creating post", 'error');
+      showToast(error.response?.data?.message || "Error creating post", 'error');
       console.error("Error adding post:", error);
-      setError(error)
-      
+      setError(error);
+    } finally {
+      setIsLoading(false);
     }
-    
   };
 
     const handleRemoveImage = (imageToRemove) => {
+    if (!images) return; // Guard against undefined images
     setImages((prev) => prev.filter((img) => img !== imageToRemove));
     showToast("Image Removed", 'success');
   };
@@ -144,10 +240,16 @@ useEffect(() => {
             Property Details
           </button>
           <button 
+            className={activeTab === 'map' ? 'active' : ''} 
+            onClick={() => setActiveTab('map')}
+          >
+            Map Location
+          </button>
+          <button 
             className={activeTab === 'location' ? 'active' : ''} 
             onClick={() => setActiveTab('location')}
           >
-            Location & Policies
+            Location Details
           </button>
           <button 
             className={activeTab === 'images' ? 'active' : ''} 
@@ -165,8 +267,15 @@ useEffect(() => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number" required />
+              <label htmlFor="price">Price (NPR)</label>
+              <input 
+                id="price" 
+                name="price" 
+                type="number" 
+                min="1" 
+                required 
+                placeholder="Enter price in NPR"
+              />
             </div>
             
             <div className="form-group">
@@ -255,14 +364,15 @@ useEffect(() => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="builtyear">Built Year</label>
+                  <label htmlFor="builtyear">Built Year (B.S.)</label>
                   <input 
-                    min={1900} 
-                    max={new Date().getFullYear()} 
+                    min={2000} 
+                    max={2080} 
                     id="builtyear" 
                     name="builtyear" 
                     type="number" 
-                    required={propertyType !== 'land'} 
+                    required={propertyType !== 'land'}
+                    placeholder="Enter year in B.S. (e.g., 2075)"
                   />
                 </div>
 
@@ -328,40 +438,91 @@ useEffect(() => {
             )}
           </div>
           
+          {activeTab === 'map' && (
+            <div className={`tab-content map-tab active`}>
+              <div className="map-container">
+                <h3>Select Property Location</h3>
+                <p className="map-instruction">Click on the map to set the property location. The coordinates will be automatically saved.</p>
+                <div className="map-wrapper">
+                  <LocationPicker 
+                    key={activeTab}
+                    onLocationSelect={handleMapClick} 
+                  />
+                </div>
+                {coordinates.lat && coordinates.lng && (
+                  <div className="coordinates-display">
+                    <p>Selected Location Coordinates:</p>
+                    <p>Latitude: {coordinates.lat}</p>
+                    <p>Longitude: {coordinates.lng}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
           <div className={`tab-content ${activeTab === 'location' ? 'active' : ''}`}>
             <div className="form-group">
               <label htmlFor="address">Address</label>
-              <input id="address" name="address" type="text" required />
+              <input 
+                id="address" 
+                name="address" 
+                type="text" 
+                required 
+                placeholder="Enter detailed address"
+              />
             </div>
             
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <input id="city" name="city" type="text" required />
+              <input 
+                id="city" 
+                name="city" 
+                type="text" 
+                required 
+                placeholder="Enter city name"
+              />
+            </div>
+            
+            <input type="hidden" name="latitude" value={coordinates.lat} />
+            <input type="hidden" name="longitude" value={coordinates.lng} />
+            
+            <div className="form-group">
+              <label htmlFor="school">Distance to School (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="school" 
+                name="school" 
+                type="number" 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
             
             <div className="form-group">
-              <label htmlFor="latitude">Latitude</label>
-              <input id="latitude" name="latitude" type="text"  required />
+              <label htmlFor="bus">Distance to Bus (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="bus" 
+                name="bus" 
+                type="number" 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
             
             <div className="form-group">
-              <label htmlFor="longitude">Longitude</label>
-              <input id="longitude" name="longitude" type="text" required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="school">Distance to School (miles)</label>
-              <input min={0} id="school" name="school" type="number" required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="bus">Distance to Bus (miles)</label>
-              <input min={0} id="bus" name="bus" type="number"  required />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="restaurant">Distance to Restaurant (miles)</label>
-              <input min={0} id="restaurant" name="restaurant" type="number" required />
+              <label htmlFor="restaurant">Distance to Restaurant (km)</label>
+              <input 
+                min="0" 
+                step="0.1"
+                id="restaurant" 
+                name="restaurant" 
+                type="number" 
+                required 
+                placeholder="Enter distance in kilometers"
+              />
             </div>
           </div>
           
@@ -406,7 +567,7 @@ useEffect(() => {
                 type="button" 
                 className="prev-button"
                 onClick={() => {
-                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const tabs = ['basic', 'details', 'map', 'location', 'images'];
                   const currentIndex = tabs.indexOf(activeTab);
                   setActiveTab(tabs[currentIndex - 1]);
                 }}
@@ -420,7 +581,7 @@ useEffect(() => {
                 type="button"
                 className="next-button"
                 onClick={() => {
-                  const tabs = ['basic', 'details', 'location', 'images'];
+                  const tabs = ['basic', 'details', 'map', 'location', 'images'];
                   const currentIndex = tabs.indexOf(activeTab);
                   setActiveTab(tabs[currentIndex + 1]);
                 }}
@@ -429,7 +590,13 @@ useEffect(() => {
               </button>
             )}
             
-            <button type="submit" className="submit-button">Post</button>
+            <button 
+              type="submit" 
+              className="submit-button"
+              disabled={!coordinates.lat || !coordinates.lng}
+            >
+              Post
+            </button>
           </div>
         </form>
       </div>
