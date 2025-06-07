@@ -8,9 +8,10 @@ import { useToast } from '../../context/ToastContext.jsx';
 function HomePage() {
   const {currentUser} = useContext(AuthContext);
    const { showToast } = useToast();
+ 
    useEffect(() => {
-       showToast('Welcome '+currentUser?.username, 'info');
-     }, [showToast]);
+       showToast('Welcome ' + (currentUser?.username ? currentUser.username : 'user'), 'info');
+     }, [showToast, currentUser]);
   return (
     <div className="homePage">
       <div className="textContainer">

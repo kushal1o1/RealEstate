@@ -32,40 +32,82 @@ import bcrypt from "bcrypt";
 //     }
 // }
 
-export const updateUser =  async (req, res) => {
+export const updateUser = async (req, res) => {
     const { id } = req.params;
     const tokenUserId = req.userId;
-    const {password,avatar,...inputs}= req.body;
+    const { password, avatar, username, email, ...otherInputs } = req.body;
 
-    if (id !== tokenUserId ) {
+    if (id !== tokenUserId) {
         return res.status(403).json({ message: "Not Authorized" });
-        
     }
-    let hashedPassword = null;
-    try{
 
-        if (password) {
-             hashedPassword = await bcrypt.hash(password, 10);
-            
+    try {
+        // Validate required fields
+        if (!username || !email) {
+            return res.status(400).json({ message: "Username and email are required!" });
         }
+
+        // Check if username is being changed and if it already exists
+        if (username) {
+            const existingUsername = await prisma.user.findFirst({
+                where: {
+                    username,
+                    id: { not: id } // Exclude current user
+                }
+            });
+            if (existingUsername) {
+                return res.status(400).json({ message: "Username already exists!" });
+            }
+        }
+
+        // Check if email is being changed and if it already exists
+        if (email) {
+            const existingEmail = await prisma.user.findFirst({
+                where: {
+                    email,
+                    id: { not: id } // Exclude current user
+                }
+            });
+            if (existingEmail) {
+                return res.status(400).json({ message: "Email already exists!" });
+            }
+        }
+
+        // Validate password if provided
+        if (password && password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long!" });
+        }
+
+        let hashedPassword = null;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10);
+        }
+
         const updatedUser = await prisma.user.update({
-            where: {
-                id
-            },
+            where: { id },
             data: {
-                ...inputs,
+                username,
+                email,
+                ...otherInputs,
                 ...(hashedPassword && { password: hashedPassword }),
                 ...(avatar && { avatar }),
             },
         });
 
-        const { password:_, ...rest } = updatedUser;
+        const { password: _, ...rest } = updatedUser;
         res.status(200).json(rest);
 
-    }
-    catch(err){
+    } catch (err) {
         console.error(err);
-        res.status(500).json({message: "Username or email already exist"});
+        if (err.code === 'P2002') {
+            // Prisma unique constraint violation
+            const field = err.meta?.target?.[0];
+            return res.status(400).json({ 
+                message: field ? `${field.charAt(0).toUpperCase() + field.slice(1)} already exists!` 
+                             : "Username or email already exists!"
+            });
+        }
+        res.status(500).json({ message: "Failed to update profile! Please try again later." });
     }
 }
 
