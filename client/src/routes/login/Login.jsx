@@ -39,7 +39,7 @@ function Login() {
       }
     } catch (err) {
       console.error(err);
-      showToast("Invalid Credentials", 'error');
+      showToast(err?.response?.data?.message, 'error');
     } finally {
       setIsLoading(false);
     }

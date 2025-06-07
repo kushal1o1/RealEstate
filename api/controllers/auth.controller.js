@@ -12,6 +12,22 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Invalid role! Role must be either USER or ADMIN" });
     }
 
+    // Check if username already exists
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already exists!" });
+    }
+
+    // Check if email already exists
+    const existingEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email already exists!" });
+    }
+
     // HASH THE PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -29,7 +45,11 @@ export const register = async (req, res) => {
     res.status(201).json({ message: "User created successfully", user: userInfo });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to create user!" });
+    if (err.code === 'P2002') {
+      // Prisma unique constraint violation
+      return res.status(400).json({ message: "Username or email already exists!" });
+    }
+    res.status(500).json({ message: "Failed to create user! Please try again later." });
   }
 };
 

@@ -23,29 +23,36 @@ function Register() {
     const username = formData.get("username");
     const email = formData.get("email");
     const password = formData.get("password");
+    if (!username || !email || !password) {
+      showToast("All fields are required!", 'error');
+      setError("All fields are required!");
+      setIsLoading(false);
+      return;
+    }
 
-    try{
+    try {
       setIsLoading(true);
       const res = await apiRequest.post('/auth/register', {
         username,
         email,
         password,
       });
-      // console.log(res.data);
       showToast("Registration Successful", 'success');
       showToast("Please Login", 'success');
       navigate('/login');
-      setIsLoading(false);
-      // setError(res.data);
-    }
-    catch(err){
-      setIsLoading(false);
+    } catch (err) {
       console.log(err);
-      showToast("Username or Email Already Exist", 'error');
-      // setError(err.response.data.message);
-    }
-    finally{
-
+      if (!err.response) {
+        // Network error or server not responding
+        showToast("Network error! Please check your connection.", 'error');
+        setError("Network error! Please check your connection.");
+      } else {
+        // Backend error with specific message
+        const errorMessage = err.response.data.message || "Registration failed!";
+        showToast(errorMessage, 'error');
+        setError(errorMessage);
+      }
+    } finally {
       setIsLoading(false);
     }
   }
@@ -54,9 +61,9 @@ function Register() {
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
           <h1>Create an Account</h1>
-          <input name="username" type="text" placeholder="Username" />
-          <input name="email" type="email" placeholder="Email" />
-          <input name="password" type="password" placeholder="Password" />
+          <input name="username" type="text" placeholder="Username" required/>
+          <input name="email" type="email" placeholder="Email" required />
+          <input name="password" type="password" placeholder="Password" required/>
           <button disabled={isLoading}>Register</button>
           {error && <span className="error">{error}</span>}
           {isLoading && <Loader message="Registering..." />}
