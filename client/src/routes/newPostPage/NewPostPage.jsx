@@ -62,50 +62,44 @@ useEffect(() => {
   }
 }, []);
 
-  // Validation functions
+  // Validation functions - now return error message or null
   const validatePrice = (price) => {
     const numPrice = parseInt(price);
     if (isNaN(numPrice) || numPrice <= 0) {
-      showToast("Price must be greater than 0", 'error');
-      return false;
+      return "Price must be greater than 0";
     }
-    return true;
+    return null;
   };
 
   const validateNumericField = (value, fieldName, min = 0) => {
     const numValue = parseInt(value);
     if (isNaN(numValue) || numValue < min) {
-      showToast(`${fieldName} must be ${min === 0 ? 'greater than or equal to 0' : `at least ${min}`}`, 'error');
-      return false;
+      return `${fieldName} must be ${min === 0 ? 'greater than or equal to 0' : `at least ${min}`}`;
     }
-    return true;
+    return null;
   };
 
   const validateCoordinates = (lat, lng) => {
     const latNum = parseFloat(lat);
     const lngNum = parseFloat(lng);
     if (isNaN(latNum) || isNaN(lngNum)) {
-      showToast("Please select a location on the map", 'error');
-      return false;
+      return "Please select a location on the map";
     }
     if (latNum < -90 || latNum > 90) {
-      showToast("Invalid latitude value", 'error');
-      return false;
+      return "Invalid latitude value (-90 to 90)";
     }
     if (lngNum < -180 || lngNum > 180) {
-      showToast("Invalid longitude value", 'error');
-      return false;
+      return "Invalid longitude value (-180 to 180)";
     }
-    return true;
+    return null;
   };
 
   const validateDistance = (value, fieldName) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue < 0) {
-      showToast(`${fieldName} distance must be greater than or equal to 0`, 'error');
-      return false;
+      return `${fieldName} distance must be greater than or equal to 0`;
     }
-    return true;
+    return null;
   };
 
   const handleMapClick = (lat, lng) => {
@@ -119,42 +113,49 @@ useEffect(() => {
   const handleSumbit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError(''); // Clear previous internal error
     
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData.entries());
     
-    // Validate all required fields
-    if (!validatePrice(inputs.price)) {
-      setIsLoading(false);
-      return;
-    }
+    let validationError = null;
+    let errorTab = 'basic'; // Default tab for basic info errors
+
+    // Basic Info validations
+    validationError = validatePrice(inputs.price);
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('basic'); return; }
 
     if (propertyType !== 'land') {
-      if (!validateNumericField(inputs.bedroom, 'Bedrooms', 1) ||
-          !validateNumericField(inputs.bathroom, 'Bathrooms', 1) ||
-          !validateNumericField(inputs.floor, 'Floor', 1)) {
-        setIsLoading(false);
-        return;
-      }
+      validationError = validateNumericField(inputs.bedroom, 'Bedrooms', 1);
+      if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('basic'); return; }
+      validationError = validateNumericField(inputs.bathroom, 'Bathrooms', 1);
+      if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('basic'); return; }
     }
 
-    if (!validateNumericField(inputs.size, 'Total Size') ||
-        !validateNumericField(inputs.facing, 'Facing') ||
-        !validateCoordinates(coordinates.lat, coordinates.lng) ||
-        !validateDistance(inputs.school, 'School') ||
-        !validateDistance(inputs.bus, 'Bus') ||
-        !validateDistance(inputs.restaurant, 'Restaurant')) {
-      setIsLoading(false);
-      return;
-    }
-
+    // Details validations
     if (propertyType !== 'land') {
-      if (!validateNumericField(inputs.builduparea, 'Build Up Area')) {
-        setIsLoading(false);
-        return;
-      }
+      validationError = validateNumericField(inputs.floor, 'Floor', 1);
+      if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('details'); return; }
     }
+    validationError = validateNumericField(inputs.size, 'Total Size');
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('details'); return; }
+    validationError = validateNumericField(inputs.facing, 'Facing');
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('details'); return; }
+    if (propertyType !== 'land') {
+      validationError = validateNumericField(inputs.builduparea, 'Build Up Area');
+      if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('details'); return; }
+    }
+
+    // Map & Location validations
+    validationError = validateCoordinates(coordinates.lat, coordinates.lng);
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('map'); return; }
+
+    validationError = validateDistance(inputs.school, 'School');
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('location'); return; }
+    validationError = validateDistance(inputs.bus, 'Bus');
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('location'); return; }
+    validationError = validateDistance(inputs.restaurant, 'Restaurant');
+    if (validationError) { showToast(validationError, 'error'); setIsLoading(false); setActiveTab('location'); return; }
 
     try {
       const res = await apiRequest.post("/posts", {
@@ -192,7 +193,7 @@ useEffect(() => {
       showToast("Post Created Successfully", 'success');
       navigate('/' + res.data.id);
     } catch (error) {
-      showToast(error.response?.data?.message || "Error creating post", 'error');
+      showToast(error.response?.data?.message || "Failed to create post. Please try again.", 'error');
       console.error("Error adding post:", error);
       setError(error);
     } finally {
@@ -223,7 +224,8 @@ useEffect(() => {
       <div className="container">
         <h1>Create Post</h1>
         
-        {error && <div className="error-message">{error.message}</div>}
+        {/* Removed inline error display, using toast instead */}
+        {/* {error && <div className="error-message">{error.message}</div>} */}
         {isLoading && <Loader message="Creating Post..." />}
         
         <div className="tabs">
