@@ -13,6 +13,7 @@ import Contact from './routes/contactPage/Contact'
 import About from './routes/aboutPage/About'
 import UpdatePostPage from './routes/updatePostPage/UpdatePostPage'
 import AdminDashboard from './routes/adminDashboard/adminDashboard.jsx'
+import NotFound from './routes/notFound/NotFound.jsx'
 function App() {
   const router = createBrowserRouter([
     {
@@ -45,7 +46,8 @@ function App() {
         {
           path:"/about",
           element:<About/>
-        }
+        },
+          { path: '*', element: <NotFound /> },
       ]
     },
     {
@@ -75,6 +77,7 @@ function App() {
           element: <SinglePage />,
           loader:singlePageLoader,
         },
+          { path: '*', element: <NotFound /> },
            
       ]
 
@@ -87,6 +90,7 @@ function App() {
       path: '/admin-dashboard',
       element: <AdminDashboard />,
     },
+      { path: '*', element: <NotFound /> },
     
       ]
     }
